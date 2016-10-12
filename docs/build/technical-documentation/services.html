@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &#8212; docstest2-claw-kimpham54 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="docstest2-claw-kimpham54 1.0.1 documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p># version 8.x-1.0</p>
+<p># Middleware Services</p>
+<p>Islandora middleware services utilize the Fedora 4 REST API and the Drupal Services module to create an API for the majority of interactions between the two systems. The Drupal uuid will be used to identify <cite>pcdm:Objects</cite> (and <cite>pcdm:Files</cite> thereof) when using these services.  The breakdown of services is as follows:</p>
+<ul class="simple">
+<li>There will be a services to provide CRUD operations for <cite>pcdm:Collections</cite>, <cite>pcdm:Objects</cite> and <cite>pcdm:Files</cite>.</li>
+<li>There will be a service to provide creational operations using zip content based on content model.  For example:
+* <cite>POST</cite> a zip file containing book pages Islandora Book Batch format to create an entire book object (with pages and derivatives processed asynchronously, of course).</li>
+<li>There will be services per derivative type to perform operations based on the node UUID of the parent.
+* <cite>PATCH</cite> to generate a new thumbnail for a <cite>pcdm:Object</cite>.</li>
+</ul>
+<p>For more information on PCDM, please see [this](<a class="reference external" href="https://wiki.duraspace.org/display/FF/Portland+Common+Data+Model">https://wiki.duraspace.org/display/FF/Portland+Common+Data+Model</a>) page.</p>
+<p>## Collection Service</p>
+<p>Used for manipulating <cite>pcdm:Collections</cite>. Essentially wraps the Fedora 4 API requests for manipulating a Container identified by Drupal uuid.  Node content in <cite>application/json</cite> format is massaged into <cite>application/sparql-update</cite> format in order to interact with Fedora.</p>
+<p><strong>Endpoint</strong>: <a class="reference external" href="http://localhost:8080/islandora-services/collection/">http://localhost:8080/islandora-services/collection/</a></p>
+<p><strong>Actions</strong>:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>GET</cite> <a class="reference external" href="http://localhost:8080/islandora-services/collection">http://localhost:8080/islandora-services/collection</a>/{uuid}</dt>
+<dd><ul class="first last simple">
+<li>Returns <cite>application/ld+json</cite> RDF metadata for the <cite>pcdm:Collection</cite> identified by the supplied Drupal uuid.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>POST</cite> <a class="reference external" href="http://localhost:8080/islandora-services/collection/">http://localhost:8080/islandora-services/collection/</a></dt>
+<dd><ul class="first last simple">
+<li>Accepts <cite>application/json</cite> serialized node data.</li>
+<li>Creates a <cite>pcdm:Collection</cite> in Fedora using the Drupal node data, associating the newly minted path with the node&#8217;s uuid. If <cite>fedora:hasParent</cite> is supplied supplied in <cite>POST</cite> data, that location will be used to create the new object as a child.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>PUT</cite> <a class="reference external" href="http://localhost:8080/islandora-services/collection">http://localhost:8080/islandora-services/collection</a>/{uuid}</dt>
+<dd><ul class="first last simple">
+<li>Accepts <cite>application/json</cite> serialized node data.</li>
+<li>Updates metadata in Fedora for the <cite>pcdm:Collection</cite> associated with the provided Drupal uuid.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>DELETE</cite> <a class="reference external" href="http://localhost:8080/islandora-services/collection">http://localhost:8080/islandora-services/collection</a>/{uuid}</dt>
+<dd><ul class="first last simple">
+<li>Deletes the <cite>pcdm:Collection</cite> in Fedora associated with provided Drupal uuid.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>## Object Service</p>
+<p>Used for manipulating <cite>pcdm:Objects</cite>. Essentially wraps the Fedora 4 API requests for manipulating a Container identified by Drupal uuid.  Node content in <cite>application/json</cite> format is massaged into <cite>application/sparql-update</cite> format in order to interact with Fedora.  Certain field values, as well as other files sent along in the message will be converted into <cite>pcdm:Files</cite> and attached to the newly created <cite>pcdm:Object</cite>.</p>
+<p><strong>Endpoint</strong>: <a class="reference external" href="http://localhost:8080/islandora-services/object/">http://localhost:8080/islandora-services/object/</a></p>
+<p><strong>Actions</strong>:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>GET</cite> <a class="reference external" href="http://localhost:8080/islandora-services/object">http://localhost:8080/islandora-services/object</a>/{uuid}</dt>
+<dd><ul class="first last simple">
+<li>Returns <cite>application/ld+json</cite> RDF metadata for the <cite>pcdm:Object</cite> identified by the supplied Drupal uuid.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>POST</cite> <a class="reference external" href="http://localhost:8080/islandora-services/object/">http://localhost:8080/islandora-services/object/</a></dt>
+<dd><ul class="first last simple">
+<li>Accepts <cite>multipart/form-data</cite> messages.  One &#8220;part&#8221; of the message will be the JSON serialized Drupal node content.  Other &#8220;parts&#8221; will be files used to create <cite>pcdm:Files</cite> for the <cite>pcdm:Object</cite>.</li>
+<li>Creates a <cite>pcdm:Object</cite> in Fedora using the Drupal node data, associating the newly minted path with the node&#8217;s uuid. If <cite>fedora:hasParent</cite> is supplied supplied in <cite>POST</cite> data, that location will be used to create the new object as a child.  Certain field values as well as any other files contained in the message will be used to create <cite>pcdm:Files</cite> associated with this <cite>pcdm:Object</cite>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>PUT</cite> <a class="reference external" href="http://localhost:8080/islandora-services/object">http://localhost:8080/islandora-services/object</a>/{uuid}</dt>
+<dd><ul class="first last simple">
+<li>Accepts <cite>multipart/form-data</cite> messages.  One &#8220;part&#8221; of the message will be the JSON serialized Drupal node content.  Other &#8220;parts&#8221; will be files used to create <cite>pcdm:Files</cite> for the <cite>pcdm:Object</cite>.</li>
+<li>Updates metadata in Fedora for the <cite>pcdm:Object</cite> associated with the provided Drupal uuid. Certain field values as well as any other files contained in the message will be used to update <cite>pcdm:Files</cite> associated with this <cite>pcdm:Object</cite>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>DELETE</cite> <a class="reference external" href="http://localhost:8080/islandora-services/object">http://localhost:8080/islandora-services/object</a>/{uuid}</dt>
+<dd><ul class="first last simple">
+<li>Deletes the <cite>pcdm:Object</cite> in Fedora associated with provided Drupal uuid. Also deletes any <cite>pcdm:Files</cite> directly contained by the <cite>pcdm:Object</cite>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>## File Services</p>
+<p>Used for manipulating <cite>pcdm:Files</cite> associated with a <cite>pcdm:Object</cite>. They will essentially wrap the Fedora 4 API requests for manipulating a <cite>NonRDFSourceDescription</cite> identified by <cite>dcterms:title</cite> (obj, mods, dc, etc...) and its parent&#8217;s Drupal uuid. There will be seperate implementations for each applicable <cite>dcterms:title</cite>, though each service will abide by a common conventions and behavior. This allows implementations to vary independently based on file type (technical metadata, descriptive metadata, archival binary), while allowing for new services to be easily added over time.</p>
+<p>### General Convention</p>
+<p><strong>Endpoint</strong>: <a class="reference external" href="http://localhost:8080/islandora-services/file">http://localhost:8080/islandora-services/file</a>/{uuid}/{dcterms:title}
+<strong>Actions</strong>:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>GET</cite> <a class="reference external" href="http://localhost:8080/islandora-services/file">http://localhost:8080/islandora-services/file</a>/{uuid}/{dcterms:title}</dt>
+<dd><ul class="first last simple">
+<li>Retrieves the <cite>pcdm:File</cite> content belonging to the <cite>pcdm:Object</cite>. The <cite>pcdm:File</cite> is identified by <cite>dcterms:title</cite> and its parents Drupal uuid.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>POST</cite> <a class="reference external" href="http://localhost:8080/islandora-services/file">http://localhost:8080/islandora-services/file</a>/{uuid}/{dcterms:title}</dt>
+<dd><ul class="first last simple">
+<li>Adds a <cite>pcdm:File</cite> to the <cite>pcdm:Object</cite> identified by the provided Drupal uuid. The file&#8217;s content will be set using the <cite>POST</cite> content, and the provided <cite>dcterms:title</cite> will be given to the newly created <cite>pcdm:File</cite>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>PUT</cite> <a class="reference external" href="http://localhost:8080/islandora-services/file">http://localhost:8080/islandora-services/file</a>/{uuid}/{dcterms:title}</dt>
+<dd><ul class="first last simple">
+<li>Updates the <cite>pcdm:File</cite> with <cite>dcterms:title</cite> owned by the <cite>pcdm:Object</cite> identified by the provided Drupal uuid. The file&#8217;s content will be set using the <cite>PUT</cite> content.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>DELETE</cite> <a class="reference external" href="http://localhost:8080/islandora-services/file">http://localhost:8080/islandora-services/file</a>/{uuid}/{dcterms:title}</dt>
+<dd><ul class="first last simple">
+<li>Deletes the <cite>pcdm:File</cite> with <cite>dcterms:title</cite> owned by the <cite>pcdm:Object</cite> identified by the provided Drupal uuid.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>### Example Services</p>
+<p>Some example services would include:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://localhost:8080/islandora/services/file">http://localhost:8080/islandora/services/file</a>/{uuid}/obj</li>
+<li><a class="reference external" href="http://localhost:8080/islandora/services/file">http://localhost:8080/islandora/services/file</a>/{uuid}/dc</li>
+<li><a class="reference external" href="http://localhost:8080/islandora/services/file">http://localhost:8080/islandora/services/file</a>/{uuid}/mods</li>
+<li><a class="reference external" href="http://localhost:8080/islandora/services/file">http://localhost:8080/islandora/services/file</a>/{uuid}/fits</li>
+</ul>
+<p>Implementations would differ in the sense that accept headers would be different, and data may have to be transformed differently before being inserted as the <cite>pcdm:File</cite>.</p>
+<p>## Derivative Services</p>
+<p>Derivatives (while generally dealt with through Islandora Sync) may need to be dealt with manually, so services will be provided to handle all the common derivatives types an Islandora installation may require. Much like the file services, a general convention on naming and behavior will be enforced, but seperate implementations will be provided. This will allow for maximum flexibility and encourage new services to be easily added and contributed.</p>
+<p>### General Convention</p>
+<p><strong>Endpoint</strong>: <a class="reference external" href="http://localhost:8080/islandora-services/derivative">http://localhost:8080/islandora-services/derivative</a>/{uuid}/{type}
+<strong>Actions</strong>:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>GET</cite> <a class="reference external" href="http://localhost:8080/islandora-services/derivative">http://localhost:8080/islandora-services/derivative</a>/{uuid}/{type}</dt>
+<dd><ul class="first last simple">
+<li>Retrieves the derivative belonging to the <cite>pcdm:Object</cite> or <cite>pcdm:Collection</cite>. The derivative is identified by its type and its parents Drupal uuid.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>POST</cite> <a class="reference external" href="http://localhost:8080/islandora-services/derivative">http://localhost:8080/islandora-services/derivative</a>/{uuid}/{type}</dt>
+<dd><ul class="first last simple">
+<li>Adds a derivative to the <cite>pcdm:Object</cite> or <cite>pcdm:Collection</cite> identified by the provided Drupal uuid. The derivative&#8217;s content will be set using the <cite>POST</cite> content. The result will reside in either Fedora or Drupal, depending on the derivative.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>PUT</cite> <a class="reference external" href="http://localhost:8080/islandora-services/derivative">http://localhost:8080/islandora-services/derivative</a>/{uuid}/{type}</dt>
+<dd><ul class="first last simple">
+<li>Updates the derviative for a <cite>pcdm:Object</cite> or <cite>pcdm:Collection</cite> identified by the provided Drupal uuid. The derivative&#8217;s content will be set using the <cite>PUT</cite> content. The result will reside in either Fedora or Drupal, depending on the derivative.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>PATCH</cite> <a class="reference external" href="http://localhost:8080/islandora-services/derivative">http://localhost:8080/islandora-services/derivative</a>/{uuid}/{type}</dt>
+<dd><ul class="first last simple">
+<li>Asynchronously regenerates the derivative for a <cite>pcdm:Object</cite> or <cite>pcdm:Collection</cite> identified by the provided Drupal uuid. The result will reside in either Fedora or Drupal, depending on the derivative.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><cite>DELETE</cite> <a class="reference external" href="http://localhost:8080/islandora-services/derivative">http://localhost:8080/islandora-services/derivative</a>/{uuid}/{type}</dt>
+<dd><ul class="first last simple">
+<li>Deletes the derivative for the <cite>pcdm:Object</cite> or <cite>pcdm:Collection</cite> identified by the provided Drupal uuid. The derivative will be removed from either Fedora or Drupal, depending on the derivative.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>### Example Services
+Some example services would include:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://localhost:8080/islandora/services/derivative">http://localhost:8080/islandora/services/derivative</a>/{uuid}/tn</li>
+<li><a class="reference external" href="http://localhost:8080/islandora/services/derivative">http://localhost:8080/islandora/services/derivative</a>/{uuid}/medium_size</li>
+<li><a class="reference external" href="http://localhost:8080/islandora/services/derivative">http://localhost:8080/islandora/services/derivative</a>/{uuid}/jp2</li>
+<li><a class="reference external" href="http://localhost:8080/islandora/services/derivative">http://localhost:8080/islandora/services/derivative</a>/{uuid}/techmd</li>
+<li><a class="reference external" href="http://localhost:8080/islandora/services/derivative">http://localhost:8080/islandora/services/derivative</a>/{uuid}/mp3</li>
+<li><a class="reference external" href="http://localhost:8080/islandora/services/derivative">http://localhost:8080/islandora/services/derivative</a>/{uuid}/mp4</li>
+<li><a class="reference external" href="http://localhost:8080/islandora/services/derivative">http://localhost:8080/islandora/services/derivative</a>/{uuid}/mkv</li>
+</ul>
+<p>Implementations would differ in the sense that different derivatives will be created from varying sources using varying programs. Also, display derivatives should reside in Drupal (TN, JP2, etc...) while technical metadata should reside in Fedora.  Within Drupal, different derivatives will reside as different field types.</p>
+<p>## Zip Ingest Services</p>
+<p>Instead of multipart/form-data reqeusts, application/zip requests can be accepted to construct a pcdm:Object based on content model.  While this is convienent for basic object types, it&#8217;s required for more complicated content models such as Book, Newspaper, and Compound.  Message bodies are assumed to be in Islandora Zip Importer format.</p>
+<p>### General Convention
+<strong>Endpoint</strong>: <a class="reference external" href="http://localhost:8080/islandora/services/zip/ingest">http://localhost:8080/islandora/services/zip/ingest</a>/{content_model}/
+<strong>Actions</strong>:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><cite>POST</cite> <a class="reference external" href="http://localhost:8080/islandora/services/zip/ingest">http://localhost:8080/islandora/services/zip/ingest</a>/{content_model}/</dt>
+<dd><ul class="first last simple">
+<li>Accepts <cite>application/zip</cite> messages</li>
+<li>Takes the supplied zip file, extracts its contents, and uses it to completely construct an object of the specified content-model.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>### Example services
+* <a class="reference external" href="http://localhost:8080/islandora/services/zip/large_image">http://localhost:8080/islandora/services/zip/large_image</a>
+* <a class="reference external" href="http://localhost:8080/islandora/services/zip/audio">http://localhost:8080/islandora/services/zip/audio</a>
+* <a class="reference external" href="http://localhost:8080/islandora/services/zip/video">http://localhost:8080/islandora/services/zip/video</a>
+* <a class="reference external" href="http://localhost:8080/islandora/services/zip/book">http://localhost:8080/islandora/services/zip/book</a>
+* <a class="reference external" href="http://localhost:8080/islandora/services/zip/newspaper">http://localhost:8080/islandora/services/zip/newspaper</a>
+* <a class="reference external" href="http://localhost:8080/islandora/services/zip/compound">http://localhost:8080/islandora/services/zip/compound</a></p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/technical-documentation/services.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, islandora community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/technical-documentation/services.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

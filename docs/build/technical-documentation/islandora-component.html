@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &#8212; docstest2-claw-kimpham54 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="docstest2-claw-kimpham54 1.0.1 documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p># version 8.x-1.0</p>
+<p># The Islandora Camel Component</p>
+<p>## Introduction
+From within a Camel route, if you ever want to execute a command you’ve writtin in PHP, all you need to do is use the Islandora Camel Component.  The Islandora Camel Component is a very small Camel component that mimics/wraps/extends bits of camel-exec in order to streamline the use of Camel commands.  It also is responsible for evaluating the exit status of the command and bubbling up an exceptions that may have been thrown.</p>
+<p>## Configuration
+Before using the Islandora component, you need to configure it in the same Blueprint xml file that defines your Camel context.  Typically, this is the <cite>src/main/resources/OSGI-INF/blueprint/blueprint.xml</cite> for your particular Camel project.  The component accepts a single value: the absolute path to the <cite>camel/commands/bin</cite> directory of your project.  It is best to set this value in the <cite>islandora.cfg</cite> as <cite>islandora.php.workingDir</cite>.</p>
+<p>Assuming you&#8217;re using the <cite>islandora.cfg</cite> file deployed to your karaf&#8217;s <cite>etc</cite> directory, your Blueprint file will look something like this:
+<a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>xml
+&lt;?xml version=&#8221;1.0&#8221; encoding=&#8221;UTF-8&#8221;?&gt;
+&lt;blueprint xmlns=&#8221;<a class="reference external" href="http://www.osgi.org/xmlns/blueprint/v1.0.0">http://www.osgi.org/xmlns/blueprint/v1.0.0</a>&#8220;</p>
+<blockquote>
+<div><blockquote>
+<div>xmlns:xsi=&#8221;http://www.w3.org/2001/XMLSchema-instance&#8221;
+xmlns:cm=&#8221;http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0&#8221;
+xsi:schemaLocation=&#8221;
+http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd&#8221;&gt;</div></blockquote>
+<p>&lt;!&#8211; Load Configuration File &#8211;&gt;
+&lt;cm:property-placeholder persistent-id=&#8221;islandora&#8221;/&gt;</p>
+<p>&lt;!&#8211; Islandora Component Configuration &#8211;&gt;
+&lt;bean id=&#8221;islandora&#8221; class=&#8221;ca.islandora.camel.component.IslandoraComponent&#8221;&gt;</p>
+<blockquote>
+<div>&lt;argument value=&#8221;${islandora.php.workingDir}&#8221;/&gt;</div></blockquote>
+<p>&lt;/bean&gt;</p>
+<dl class="docutils">
+<dt>&lt;camelContext id=&#8221;your_context_id&#8221; xmlns=&#8221;<a class="reference external" href="http://camel.apache.org/schema/blueprint">http://camel.apache.org/schema/blueprint</a>&#8220;&gt;</dt>
+<dd>&lt;&#8211; Your routes go here... &#8211;&gt;</dd>
+</dl>
+<p>&lt;/camelContext&gt;</p>
+</div></blockquote>
+<p>&lt;/blueprint&gt;
+<a href="#id5"><span class="problematic" id="id6">``</span></a><a href="#id7"><span class="problematic" id="id8">`</span></a></p>
+<p>## Usage
+Once configured, you can use the component to execute any IslandoraCommand in PHP within your camel routes.  General usage is:
+<code class="docutils literal"><span class="pre">`xml</span>
+<span class="pre">&lt;to</span> <span class="pre">uri=&quot;islandora:namespace:command&quot;/&gt;</span>
+<span class="pre">`</span></code>
+You can see a list of all available namespaces and commands at any time by going to the <cite>camel/commands/bin</cite> directory of your project and running <cite>php islandora.php</cite>.
+<a href="#id9"><span class="problematic" id="id10">``</span></a><a href="#id11"><span class="problematic" id="id12">`</span></a>bash
+<a class="reference external" href="mailto:vagrant&#37;&#52;&#48;islandora">vagrant<span>&#64;</span>islandora</a>:~$ cd ~/islandora/camel/commands/bin
+<a class="reference external" href="mailto:vagrant&#37;&#52;&#48;islandora">vagrant<span>&#64;</span>islandora</a>:~/islandora/camel/commands/bin$ php islandora.php
+Islandora Command Tool version 0.0.0-SNAPSHOT</p>
+<dl class="docutils">
+<dt>Usage:</dt>
+<dd>command [options] [arguments]</dd>
+<dt>Options:</dt>
+<dd><table class="first docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>Display this help message</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-q</span>, <span class="option">--quiet</span></kbd></td>
+<td>Do not output any message</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-V</span>, <span class="option">--version</span></kbd></td>
+<td>Display this application version
+&#8211;ansi            Force ANSI output
+&#8211;no-ansi         Disable ANSI output</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">-n</span>, <span class="option">--no-interaction</span></kbd></td>
+</tr>
+<tr><td>&nbsp;</td><td>Do not ask any interactive question</td></tr>
+</tbody>
+</table>
+<p class="last">-v|vv|vvv, &#8211;verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug</p>
+</dd>
+<dt>Available commands:</dt>
+<dd><blockquote class="first">
+<div>help                            Displays help for a command
+list                            Lists commands</div></blockquote>
+<dl class="last docutils">
+<dt>collectionService</dt>
+<dd>collectionService:nodeToSparql  Converts Drupal node JSON for a collection to a SPARQL Update query</dd>
+<dt>greeter</dt>
+<dd>greeter:hello                   Says hello!
+greeter:helloUsingJson          Says hello!  Accepts JSON data in the form {&#8220;name&#8221; : &#8220;your_name&#8221;}.</dd>
+<dt>rdf</dt>
+<dd>rdf:createNode                  Creates a Drupal node from Fedora RDF.
+rdf:extractContentType          Extracts a Drupal content type from Fedora RDF.
+rdf:updateNode                  Updates a Drupal node from Fedora RDF.</dd>
+</dl>
+</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">`</span>
+<span class="pre">For</span> <span class="pre">example,</span> <span class="pre">to</span> <span class="pre">run</span> <span class="pre">the</span> <span class="pre">greeter</span> <span class="pre">example</span> <span class="pre">from</span> <span class="pre">the</span> <span class="pre">tutorial</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">Commands</span> <span class="pre">documentation:</span>
+<span class="pre">```xml</span>
+<span class="pre">&lt;to</span> <span class="pre">uri=&quot;islandora:greeter:hello&quot;/&gt;</span>
+<span class="pre">`</span></code>
+Here&#8217;s a small Blueprint file that will execute the <cite>greeter:hello</cite> command every 5 seconds and log the output.
+<a href="#id13"><span class="problematic" id="id14">``</span></a><a href="#id15"><span class="problematic" id="id16">`</span></a>xml
+&lt;?xml version=&#8221;1.0&#8221; encoding=&#8221;UTF-8&#8221;?&gt;
+&lt;blueprint xmlns=&#8221;<a class="reference external" href="http://www.osgi.org/xmlns/blueprint/v1.0.0">http://www.osgi.org/xmlns/blueprint/v1.0.0</a>&#8220;</p>
+<blockquote>
+<div><blockquote>
+<div>xmlns:xsi=&#8221;http://www.w3.org/2001/XMLSchema-instance&#8221;
+xmlns:cm=&#8221;http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.0.0&#8221;
+xsi:schemaLocation=&#8221;
+http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd&#8221;&gt;</div></blockquote>
+<p>&lt;!&#8211; Load Configuration File &#8211;&gt;
+&lt;cm:property-placeholder persistent-id=&#8221;islandora&#8221;/&gt;</p>
+<p>&lt;!&#8211; Islandora Component Configuration &#8211;&gt;
+&lt;bean id=&#8221;islandora&#8221; class=&#8221;ca.islandora.camel.component.IslandoraComponent&#8221;&gt;</p>
+<blockquote>
+<div>&lt;argument value=&#8221;${islandora.php.workingDir}&#8221;/&gt;</div></blockquote>
+<p>&lt;/bean&gt;</p>
+<dl class="docutils">
+<dt>&lt;camelContext id=&#8221;your_context_id&#8221; xmlns=&#8221;<a class="reference external" href="http://camel.apache.org/schema/blueprint">http://camel.apache.org/schema/blueprint</a>&#8220;&gt;</dt>
+<dd><dl class="first docutils">
+<dt>&lt;route&gt;</dt>
+<dd><dl class="first last docutils">
+<dt>&lt;from uri=&#8221;timer:foo?period=5000&#8221;/&gt;</dt>
+<dd>&lt;setBody&gt;&lt;constant&gt;World&lt;/constant&gt;&lt;/setBody&gt;
+&lt;to uri=&#8221;islandora:greeter:hello&#8221;/&gt;
+&lt;log message=&#8221;${body}&#8221;/&gt;</dd>
+</dl>
+</dd>
+</dl>
+<p class="last">&lt;/route&gt;</p>
+</dd>
+</dl>
+<p>&lt;/camelContext&gt;</p>
+</div></blockquote>
+<p>&lt;/blueprint&gt;
+<a href="#id17"><span class="problematic" id="id18">``</span></a>`
+You can deploy this file to your karaf&#8217;s <cite>deploy</cite> directory and watch it go.  In your logs, you should see something like this:
+<a href="#id19"><span class="problematic" id="id20">``</span></a><a href="#id21"><span class="problematic" id="id22">`</span></a>bash
+<a class="reference external" href="mailto:vagrant&#37;&#52;&#48;islandora">vagrant<span>&#64;</span>islandora</a>:~$ /opt/karaf/bin/client
+Logging in as karaf
+750 [sshd-SshClient[6107227e]-nio2-thread-1] WARN org.apache.sshd.client.keyverifier.AcceptAllServerKeyVerifier - Server at [/0.0.0.0:8101, RSA, 88:ab:a4:c9:c0:bc:53:bf:bb:f8:b3:8b:80:98:26:7d] presented unverified {} key: {}</p>
+<blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div></div></blockquote>
+<p>/ //_/____ __________ _/ __/</p>
+</div></blockquote>
+<p>/ ,&lt;  / __ <a href="#id24"><span class="problematic" id="id25">`</span></a>/ ___/ __ <a href="#id26"><span class="problematic" id="id27">`</span></a>/ /_</p>
+</div></blockquote>
+<p>/ /| <a href="#id28"><span class="problematic" id="id29">|</span></a>/ /_/ / /  / /_/ / __/</p>
+</div></blockquote>
+<p>/_/ <a href="#id34"><span class="problematic" id="id35">|_|</span></a>__,_/_/   __,_/_/</p>
+</div></blockquote>
+<p>Apache Karaf (3.0.4)</p>
+</div></blockquote>
+<p>Hit &#8216;&lt;tab&gt;&#8217; for a list of available commands
+and &#8216;[cmd] &#8211;help&#8217; for help on a specific command.
+Hit &#8216;system:shutdown&#8217; to shutdown Karaf.
+Hit &#8216;&lt;ctrl-d&gt;&#8217; or type &#8216;logout&#8217; to disconnect shell from current session.</p>
+<p>karaf&#64;root()&gt; log:tail
+2015-07-17 18:12:51,292 | INFO  | #7 - timer://foo | IslandoraProducer                | 132 - ca.islandora.camel.component.islandora-camel-component - 0.0.0.SNAPSHOT | Executing ExecCommand [args=[islandora.php, greeter:hello], executable=php, timeout=9223372036854775807, outFile=null, workingDir=/home/vagrant/islandora/camel/commands/bin, useStderrOnEmptyStdout=false]
+2015-07-17 18:12:51,681 | INFO  | #7 - timer://foo | IslandoraProducer                | 132 - ca.islandora.camel.component.islandora-camel-component - 0.0.0.SNAPSHOT | The command ExecCommand [args=[islandora.php, greeter:hello], executable=php, timeout=9223372036854775807, outFile=null, workingDir=/home/vagrant/islandora/camel/commands/bin, useStderrOnEmptyStdout=false] had exit value 0
+2015-07-17 18:12:51,682 | INFO  | #7 - timer://foo | route53                          | 109 - org.apache.camel.camel-core - 2.15.2 | Hello World!</p>
+<p>2015-07-17 18:12:56,292 | INFO  | #7 - timer://foo | IslandoraProducer                | 132 - ca.islandora.camel.component.islandora-camel-component - 0.0.0.SNAPSHOT | Executing ExecCommand [args=[islandora.php, greeter:hello], executable=php, timeout=9223372036854775807, outFile=null, workingDir=/home/vagrant/islandora/camel/commands/bin, useStderrOnEmptyStdout=false]
+2015-07-17 18:12:56,676 | INFO  | #7 - timer://foo | IslandoraProducer                | 132 - ca.islandora.camel.component.islandora-camel-component - 0.0.0.SNAPSHOT | The command ExecCommand [args=[islandora.php, greeter:hello], executable=php, timeout=9223372036854775807, outFile=null, workingDir=/home/vagrant/islandora/camel/commands/bin, useStderrOnEmptyStdout=false] had exit value 0
+2015-07-17 18:12:56,676 | INFO  | #7 - timer://foo | route53                          | 109 - org.apache.camel.camel-core - 2.15.2 | Hello World!
+<a href="#id30"><span class="problematic" id="id31">``</span></a><a href="#id32"><span class="problematic" id="id33">`</span></a></p>
+<p>## Errors and Exceptions in PHP
+The Islandora Camel component automatically handles checking the return code on the command, and will automatically bubble up any exception from PHP by throwing an IslandoraPHPException that can be handled within your Camel context.  See the section on exception handling in Camel for more information.</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/technical-documentation/islandora-component.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, islandora community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/technical-documentation/islandora-component.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
