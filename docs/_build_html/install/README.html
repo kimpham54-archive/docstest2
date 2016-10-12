@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &#8212; docstest2-claw-kimpham54 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="docstest2-claw-kimpham54 1.0.1 documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p># version 8.x-1.0</p>
+<p>## Introduction</p>
+<p>The is a development environment virtual machine for the Islandora and Fedora 4 project. It should work on any operating system that supports VirtualBox and Vagrant.</p>
+<p>N.B. This virtual machine <strong>should not</strong> be used in production.</p>
+<p>## Requirements</p>
+<ol class="arabic simple">
+<li>[VirtualBox](<a class="reference external" href="https://www.virtualbox.org/">https://www.virtualbox.org/</a>)</li>
+<li>[Vagrant](<a class="reference external" href="http://www.vagrantup.com/">http://www.vagrantup.com/</a>) 1.8.5+</li>
+<li>[git](<a class="reference external" href="https://git-scm.com/">https://git-scm.com/</a>)</li>
+</ol>
+<p>## Variables</p>
+<p>### System Resources</p>
+<p>By default the virtual machine that is built uses 2GB of RAM. Your host machine will need to be able to support the additional memory use. You can override the CPU and RAM allocation by creating <cite>ISLANDORA_VAGRANT_CPUS</cite> and <cite>ISLANDORA_VAGRANT_MEMORY</cite> environment variables and setting the values. For example, on an Ubuntu host you could add to <cite>~/.bashrc</cite>:</p>
+<p><code class="docutils literal"><span class="pre">`bash</span>
+<span class="pre">export</span> <span class="pre">ISLANDORA_VAGRANT_CPUS=4</span>
+<span class="pre">export</span> <span class="pre">ISLANDORA_VAGRANT_MEMORY=4096</span>
+<span class="pre">`</span></code></p>
+<p>### Hostname and Description</p>
+<p>If you use a DNS or host file management plugin with Vagrant, you may want to set a specific hostname for the virtual machine. You can do that with the <cite>ISLANDORA_VAGRANT_HOSTNAME</cite> variable.  The <cite>ISLANDORA_VAGRANT_VIRTUALBOXDESCRIPTION</cite> variables can be used to track the VM build. For example:</p>
+<p><code class="docutils literal"><span class="pre">`bash</span>
+<span class="pre">export</span> <span class="pre">ISLANDORA_VAGRANT_HOSTNAME=&quot;islandora-deux&quot;</span>
+<span class="pre">export</span> <span class="pre">ISLANDORA_VAGRANT_VIRTUALBOXDESCRIPTION=&quot;Islandora</span> <span class="pre">CLAW&quot;</span>
+<span class="pre">`</span></code></p>
+<p>## Use</p>
+<p>VirtualBox:</p>
+<ol class="arabic simple">
+<li><cite>git clone https://github.com/Islandora-CLAW/CLAW</cite></li>
+<li><cite>cd CLAW/install</cite></li>
+<li><cite>vagrant up</cite></li>
+</ol>
+<p>DigitalOcean:</p>
+<ol class="arabic simple">
+<li><cite>git clone https://github.com/Islandora-CLAW/CLAW</cite></li>
+<li><cite>cd CLAW/install</cite></li>
+<li><cite>vagrant plugin install vagrant-digitalocean</cite></li>
+<li>Set the following environment variables:</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><cite>DIGITALOCEAN_TOKEN</cite> &#8211; Your DigitalOcean API token</li>
+<li><cite>DIGITALOCEAN_KEYNAME</cite> &#8211; Your DigitalOcean ssh key name</li>
+<li><cite>DIGITALOCEAN_KEYPATH</cite> &#8211; Path to your ssh keys that you&#8217;ve setup with DigitalOcean</li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><cite>vagrant up &#8211;provider=digital_ocean</cite></li>
+</ol>
+<p>Amazon:</p>
+<ol class="arabic simple">
+<li><cite>git clone https://github.com/Islandora-CLAW/CLAW</cite></li>
+<li><cite>cd CLAW/install</cite></li>
+<li><cite>vagrant plugin install vagrant-aws</cite></li>
+<li>Set the following environment variables:</li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><cite>AWS_KEY</cite></li>
+<li><cite>AWS_SECRET</cite></li>
+<li><cite>AWS_KEYNAME</cite></li>
+<li><cite>AWS_KEYPATH</cite></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><cite>vagrant up &#8211;provider=aws</cite></li>
+</ol>
+<p>N.B. You may not be able to connect to your AWS instance depending on VPC settings.</p>
+<p>## Connect</p>
+<p>You can connect to the machine via the browser at [<a class="reference external" href="http://localhost:8000](http://localhost:8000">http://localhost:8000](http://localhost:8000</a>).</p>
+<p>The default Drupal login details are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>username: admin</li>
+<li>password: islandora</li>
+</ul>
+</div></blockquote>
+<p>MySQL:</p>
+<blockquote>
+<div><ul class="simple">
+<li>username: root</li>
+<li>password: islandora</li>
+</ul>
+</div></blockquote>
+<p>The Fedora 4 REST API can be accessed at [<a class="reference external" href="http://localhost:8080/fcrepo/rest](http://localhost:8080/fcrepo/rest">http://localhost:8080/fcrepo/rest](http://localhost:8080/fcrepo/rest</a>).  It currently has authentication disabled.</p>
+<p>Tomcat Manager:</p>
+<blockquote>
+<div><ul class="simple">
+<li>username: islandora</li>
+<li>password: islandora</li>
+</ul>
+</div></blockquote>
+<p>You can connect to the machine via ssh: <cite>ssh -p 2222 vagrant&#64;localhost</cite></p>
+<p>The default VM login details are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>username: vagrant</li>
+<li>password: vagrant</li>
+</ul>
+</div></blockquote>
+<p>## Environment</p>
+<ul class="simple">
+<li>Ubuntu 14.04.4</li>
+<li>Drupal 8.1.3</li>
+<li>MySQL 5.5.49</li>
+<li>Apache 2.24.7</li>
+<li>Tomcat 7.0.52</li>
+<li>Solr 4.10.3</li>
+<li>Camel 2.14.1</li>
+<li>Fedora 4.5.1</li>
+<li>Fedora Camel Component 4.2.0</li>
+<li>BlazeGraph 1.5.1</li>
+<li>Karaf 4.0.5</li>
+<li>Sync 0.0.0</li>
+<li>Islandora 7.x-2.x</li>
+<li>PHP 5.6.22 and 7.0.7</li>
+<li>Java 8 (Oracle)</li>
+</ul>
+<p>## Windows Troubleshooting</p>
+<p>If you receive errors involving <cite>r</cite> (end of line) you have two options:</p>
+<ol class="arabic simple">
+<li>Clone down the current development branch using <cite>&#8211;single-branch</cite>.</li>
+</ol>
+<blockquote>
+<div><code class="docutils literal"><span class="pre">`</span>
+<span class="pre">git</span> <span class="pre">clone</span> <span class="pre">--single-branch</span> <span class="pre">--branch</span> <span class="pre">sprint-002</span> <span class="pre">git&#64;github.com:Islandora-CLAW/CLAW.git</span> <span class="pre">&lt;optional</span> <span class="pre">directory</span> <span class="pre">name&gt;</span>
+<span class="pre">`</span></code>
+A benifit to this approach is that files created or edited on a Windows environment will be pushed back to your fork with appropriate <cite>LF</cite> endings.</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Modify your global <cite>.gitconfig</cite> file to disable the Windows behavior of <cite>autocrlf</cite> entirely.</li>
+</ol>
+<blockquote>
+<div>Edit the global <cite>.gitconfig</cite> file, find the line:
+<code class="docutils literal"><span class="pre">`</span>
+<span class="pre">autocrlf</span> <span class="pre">=</span> <span class="pre">true</span>
+<span class="pre">`</span></code>
+and change it to
+<code class="docutils literal"><span class="pre">`</span>
+<span class="pre">autocrlf</span> <span class="pre">=</span> <span class="pre">false</span>
+<span class="pre">`</span></code>
+Remove and clone again. This will prevent Windows git clients from automatically replacing Unix line endings LF with Windows line endings CRLF.</div></blockquote>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/install/README.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, islandora community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/install/README.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &#8212; docstest2-claw-kimpham54 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="docstest2-claw-kimpham54 1.0.1 documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p># Intro to Islandora CLAW</p>
+<p>Islandora CLAW is the project name for development of Islandora to work with Fedora 4, also known as Islandora 7.x-2.x. To fully understand Islandora CLAW, it is best to start by looking at its contrasts to the previous version of Islandora, known as 7.x-1.x.</p>
+<p>Islandora 7.x-1.x works as a bridge between Drupal 7.x and Fedora 3. Put simply, Islandora 7.x-1.x is middleware between Fedora 3 and Drupal 7.x, sometimes expressed as a hamburger:
+## Islandora 7.x-1.x (with Fedora 3)</p>
+<p>![image](../assets/hamburger.png)</p>
+<p>Islandora CLAW (or Islandora 7.x-2.x) does more than simply replace that base layer with Fedora 4. It is a total re-architecting of the interaction between the various pieces. Rather than a hamburger, Islandora CLAW is a chimera:
+## Islandora CLAW (with Fedora 4)</p>
+<p>![image](../assets/claw-chimera.png)</p>
+<p>Or, for a diagram that doesn&#8217;t involve food or animals:</p>
+<p>![image](../assets/claw-diagram.png)</p>
+<p>This new structure has several advantages:</p>
+<ul class="simple">
+<li>Parcelling out the various services and dependencies allows for more horizontal scalability</li>
+<li>Changing the relationship between Drupal and Fedora allows for a more flexible approach to front-end management (i.e, it need not be Drupal) while also taking much greater advantage of features available from Drupal (i.e, Fedora objects are treated more like nodes, for the purposes of using Drupal contrib modules. Many Islandora 7.x-1.x modules are redundant in Islandora CLAW because they reproduce existing Drupal contrib modules that can be used out of the box in Islandora CLAW).</li>
+<li>Easier to keep up-to-date as not all pieces must be versioned together.</li>
+<li>Installations tools (Ansible, Docker, Vagrant) can automate uniting the pieces in a simple, clean installation process. Islandora has always been a turn-key repository solution, in the sense that it needs no customization once installed. With Islandora CLAW, that installation process is much smoother, with automated solutions that can be used in production.</li>
+</ul>
+<p>## Ecosystem</p>
+<p>#### [Alpaca](<a class="reference external" href="https://github.com/Islandora-CLAW/Alpaca">https://github.com/Islandora-CLAW/Alpaca</a>)
+Event driven middleware based on Apache Camel that synchronizes Fedora 4 with Drupal.</p>
+<p>#### [Chullo](<a class="reference external" href="https://github.com/Islandora-CLAW/chullo">https://github.com/Islandora-CLAW/chullo</a>)
+A PHP client for Fedora 4 built using Guzzle and EasyRdf.</p>
+<p>#### [CLAW](<a class="reference external" href="https://github.com/Islandora-CLAW/CLAW">https://github.com/Islandora-CLAW/CLAW</a>)
+A container with references to all of the other components that make up Islandora CLAW. Also contains documentation and project discussions.</p>
+<p>#### [Crayfish](<a class="reference external" href="https://github.com/Islandora-CLAW/Crayfish">https://github.com/Islandora-CLAW/Crayfish</a>)
+Top level container for the various Islandora CLAW microservices.</p>
+<p>#### [Islandora](<a class="reference external" href="https://github.com/Islandora-CLAW/islandora">https://github.com/Islandora-CLAW/islandora</a>)
+The Drupal modules associated with CLAW. Work is underway to have this as a project on [drupal.org](<a class="reference external" href="https://www.drupal.org/">https://www.drupal.org/</a>).</p>
+<p>#### [PDX](<a class="reference external" href="https://github.com/Islandora-CLAW/pdx">https://github.com/Islandora-CLAW/pdx</a>)
+Top level container for the various PCDM specific Islandora CLAW microservices.</p>
+<p>## Why Switch?</p>
+<p>Islandora 7.x-1.x is a tried and tested product with a vibrant user and contributor community and many tools and add-ons available to customize and expand its uses. Islandora CLAW is a major departure, representing a great deal of work both in development of the software, and to migrate and upgrade existing Islandora sites. So why make the change?</p>
+<p>### Fedora
+The primary motive for moving to Islandora CLAW is to stay current with the repository layer of our ecosystem. Moving to Fedora 4 is vital for the long-term utility of the project.</p>
+<ul class="simple">
+<li>Fedora 3 is End-of-Life and has not been supported since 2015. This means that there will be no improvements, bug fixes, or security patches released for the software, drastically increasing individual maintenance needs for adopters.</li>
+<li>Fedora 3 experiences significant slowdown when repositories reach a large (millions) number of objects. Fedora 4 is much more scalable, and is specifically engineered to be horizontally scalable in ways that Fedora 3 cannot.</li>
+</ul>
+<p>### Drupal
+[Drupal 8](<a class="reference external" href="https://www.drupal.org/8">https://www.drupal.org/8</a>) has been officially released and development has begun on Drupal 9. Official Drupal policy will see Drupal 7 become unsupported when Drupal 9 is released, putting it in the same precarious territory as Fedora 3.</p>
+<p>The initial phases of Islandora CLAW development worked with Drupal 7 as a front-end, but Islandora CLAW has been architected with a pivot to Drupal 8 in mind from its very inception. As of June, 2016, Islandora CLAW development has pivoted fully to Drupal 8, ensuring that when the Islandora Community is ready to make the move, there will be a version of Islandora that functions with the latest and best-supported versions of both our front-end and repository layers by pairing Drupal 8 with Fedora 4.</p>
+<p>### Community-Driven Design</p>
+<p>The Islandora community has grown significantly since the project began, both in terms of users and contributors. For the first time, we are in a position to have a truly community-driven development process, in which any Islandora user can participate at whatever level fits their interests and abilities. Islandora CLAW has worked with the broader Islandora community to solicit use-cases, put forward prospectuses and project plans for review and editing, and has been developed with a mix of funding from Islandora Foundation members and volunteer developers working on sprints.</p>
+<p>Islandora CLAW is developed _by_ the Islandora community, _for_ the Islandora community. As a member of the Islandora community, you can help to steer the direction it takes.</p>
+<p>### Linked Data</p>
+<p>Linked Data is a big concept. A [definition by Tim Bernes-Lee](<a class="reference external" href="https://www.w3.org/DesignIssues/LinkedData.html">https://www.w3.org/DesignIssues/LinkedData.html</a>) from 2006 articulates the basic idea in the context of the &#8220;Semantic Web&#8221;:</p>
+<p>&gt;It is about making links, so that a person or machine can explore the web of data. With linked data, when you have some of it, you can find other, related, data.</p>
+<p>&gt;Like the web of hypertext, the web of data is constructed with documents on the web. However, unlike the web of hypertext, where links are relationships anchors in hypertext documents written in HTML, for data they links between arbitrary things described by RDF. The URIs identify any kind of object or concept. But for HTML or RDF, the same expectations apply to make the web grow:</p>
+<p>&gt; 1. Use URIs as names for things</p>
+<p>&gt; 1. Use HTTP URIs so that people can look up those names.</p>
+<p>&gt; 1. When someone looks up a URI, provide useful information, using the standards (RDF*, SPARQL)</p>
+<p>&gt; 1. Include links to other URIs. so that they can discover more things.</p>
+<p>LDP is an official W3C recommendation. According to [their spec](<a class="reference external" href="https://www.w3.org/TR/ldp/">https://www.w3.org/TR/ldp/</a>), Linked Data Platform (LDP) defines a set of rules for HTTP operations on web resources, some based on RDF, to provide an architecture for read-write Linked Data on the web. Put more simply: An LDP server is a web server that lets you manage relationships in RDF by creating URLs you can perform CRUD (Create Read Update Delete)
+operation on:</p>
+<ul class="simple">
+<li><cite>http://my_url/some_resource</cite></li>
+<li><cite>http://my_url/some_resource/children</cite></li>
+<li><cite>http://my_url/some_resource/children/child_resource</cite></li>
+<li><cite>&lt;&gt; prefix:isChildOf &lt;http://my_url/some_resource&gt;</cite></li>
+</ul>
+<p>An LDP server also lets you request the RDF graph for a resource with varying levels of additional information for discovery:</p>
+<ul class="simple">
+<li>The resource itself</li>
+<li>The resource plus child resources</li>
+<li>The resource plus all other resources that reference it (inbound references)</li>
+<li>The resource plus children plus inbound references</li>
+</ul>
+<p>Fedora 4 is an LDP implementation. It stores metadata using RDF (Resource Description Framework), a standard format for data interchange on the web. RDF data is formatted as triples, like so: <cite>&lt;resource_uri&gt; &lt;predicate_uri&gt; &lt;object_uri&gt;</cite> and can be exported in many different formats:</p>
+<ul class="simple">
+<li>JSON-LD</li>
+<li>RDF/XML</li>
+<li>Turtle</li>
+<li>N-Triples</li>
+</ul>
+<p>Working with RDF is not entirely new in the Islandora/Fedora context, as RELS-EXT and RELS-INT have always been RDF/XML. Related objects can be included in RDF, so it functions as a graph you can traverse in order to discover more information.</p>
+<p>#### Example: Dublin Core as XML and RDF using the dc namespace</p>
+<p>Dublin Core XML you store with the resource.
+<a href="#id1"><span class="problematic" id="id2">``</span></a>`
+&lt;?xml version=&#8221;1.0&#8221;?&gt;
+&lt;metadata</p>
+<blockquote>
+<div><p>xmlns=&#8221;<a class="reference external" href="http://example.org/myapp/">http://example.org/myapp/</a>&#8221;
+xmlns:xsi=&#8221;http://www.w3.org/2001/XMLSchema-instance&#8221;
+xsi:schemaLocation=&#8221;http://example.org/myapp/ http://example.org/myapp/schema.xsd&#8221;
+xmlns:dc=&#8221;http://purl.org/dc/elements/1.1/&#8221;&gt;
+&lt;dc:title&gt;</p>
+<blockquote>
+<div>Islandora</div></blockquote>
+<p>&lt;/dc:title&gt;
+&lt;dc:description&gt;</p>
+<blockquote>
+<div>Islandora is an open-source software framework designed to help institutions and organizations and their audiences collaboratively manage, and discover digital assets using a best-practices framework.</div></blockquote>
+<p>&lt;/dc:description&gt;</p>
+</div></blockquote>
+<p>&lt;/metadata&gt;
+<code class="docutils literal"><span class="pre">`</span>
+<span class="pre">vs</span> <span class="pre">RDF</span> <span class="pre">(which</span> <span class="pre">is</span> <span class="pre">actually</span> <span class="pre">properties</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">resource)</span>
+<span class="pre">`</span></code>
+&#64;prefix dc: &lt;<a class="reference external" href="http://purl.org/dc/elements/1.1/">http://purl.org/dc/elements/1.1/</a>&gt; .
+&lt;<a class="reference external" href="http://islandora.ca/">http://islandora.ca/</a>&gt; dc:title &#8220;Islandora&#8221; ;</p>
+<blockquote>
+<div>dc:description &#8220;Islandora is an open-source software framework designed to help institutions and organizations and their audiences collaboratively manage, and discover digital assets using a best-practices framework.&#8221; .</div></blockquote>
+<p><a href="#id3"><span class="problematic" id="id4">``</span></a><a href="#id5"><span class="problematic" id="id6">`</span></a></p>
+<p>### Interoperability</p>
+<p>Islandora CLAW works with the [Portland Common Data Model](<a class="reference external" href="https://github.com/duraspace/pcdm/wiki">https://github.com/duraspace/pcdm/wiki</a>), &#8220;a flexible, extensible domain model that is intended to underlie a wide array of repository and DAMS applications.&#8221; What does this mean in practice? Objects stored in Islandora CLAW will have a data model that can be recognized by Hydra and other custom Fedora 4 based repository heads, and vice versa. By working together with the Hydra and Fedora communities, we can leverage a broader community of developers, librarians, and other digital repository users to build better tools and share resources.</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user-documentation/intro-to-claw.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, islandora community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/user-documentation/intro-to-claw.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

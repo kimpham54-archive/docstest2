@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &#8212; docstest2-claw-kimpham54 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="docstest2-claw-kimpham54 1.0.1 documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p>#What&#8217;s Different Between Islandora 1.x and 2.x</p>
+<p>In the most basic terms, Islandora 7.x-2.x is the version of Islandora that works with [Fedora 4](<a class="reference external" href="https://wiki.duraspace.org/display/FEDORA4x/Fedora+4.x+Documentation">https://wiki.duraspace.org/display/FEDORA4x/Fedora+4.x+Documentation</a>). Because Fedora 4 is a vastly different platform than Fedora 3, so too is Islandora 7.x-2.x a major departure from what came before. Switching to 7.x-2.x represents not just a typical upgrade with improvements, features, and bug fixes, but rather a major shift in how objects are stored and managed.</p>
+<p>Moving from Islandora 7.x-1.x to 7.x-2.x requires a migration of objects, which you can learn about [here](../migration/migration.md). It also requires some adjustments in how you think about your objects and their relationships, and how to manage them in Islandora, which we will cover below.</p>
+<p>You can also check out some of the documentation provided by the Fedora project:
+* [Concept Mapping - Fedora 3 to 4](<a class="reference external" href="https://wiki.duraspace.org/display/FEDORA4x/Concept+Mapping+-+Fedora+3+to+4">https://wiki.duraspace.org/display/FEDORA4x/Concept+Mapping+-+Fedora+3+to+4</a>)
+* [The Fedora 4 object model](<a class="reference external" href="https://wiki.duraspace.org/display/FEDORA4x/The+Fedora+4+object+model">https://wiki.duraspace.org/display/FEDORA4x/The+Fedora+4+object+model</a>)
+* [Fedora 3 to 4 Upgration](<a class="reference external" href="https://wiki.duraspace.org/display/FF/Fedora+3+to+4+Upgration">https://wiki.duraspace.org/display/FF/Fedora+3+to+4+Upgration</a>)
+* [LDP-PCDM-F4 In Action](<a class="reference external" href="https://wiki.duraspace.org/display/FEDORA4x/LDP-PCDM-F4+In+Action">https://wiki.duraspace.org/display/FEDORA4x/LDP-PCDM-F4+In+Action</a>)</p>
+<p>##Fedora</p>
+<p>###Repository Structure</p>
+<p>Fedora 3 stored all objects at the top level of the repository, although presentation of the objects could mimic a directory structure by having objects &#8216;in&#8217; collections and collections &#8216;in&#8217; other collections. This image is a helpful oversimplification:</p>
+<p>![image](<a class="reference external" href="https://cloud.githubusercontent.com/assets/2371345/10912108/525c2a0e-821e-11e5-9c5b-d853b62f1e5a.png">https://cloud.githubusercontent.com/assets/2371345/10912108/525c2a0e-821e-11e5-9c5b-d853b62f1e5a.png</a>)</p>
+<p>Fedora 4 differs considerably in that there is an innate tree hierarchy to the repository rather than a flat structure. Put less simply, &#8220;a Fedora 4 repository consists of a directed acyclic graph of resources where edges represent a parent-child relation&#8221; ([Fedora 4](<a class="reference external" href="https://wiki.duraspace.org/display/FEDORA4x/The+Fedora+4+object+model">https://wiki.duraspace.org/display/FEDORA4x/The+Fedora+4+object+model</a>)).</p>
+<p>###Object Structure
+Fedora 3 objects are FOXML (Fedora Object eXtensible Markup Language) documents, with three elements:</p>
+<ul class="simple">
+<li><cite>Digital Object Identifier</cite>: A unique, persistent identifier for the digital object. Also knowns as the PID.</li>
+<li><cite>System Properties</cite>: A set of system-defined descriptive properties that is necessary to manage and track the object in the repository.</li>
+<li><cite>Datastream(s)</cite>: The element in a Fedora digital object that represents a content item.</li>
+</ul>
+<p>In Fedora 4 , what we would have called <cite>objects</cite> are now referred to as <cite>resources</cite> and are not composed of XML; instead, they are stored in ModeShape as nodes with RDF properties. They can contain the following elements:</p>
+<ul class="simple">
+<li><cite>Container</cite>: Roughly equivalent to a Fedora 3 object - a conceptual representation of a thing that can contain files or other containers.</li>
+<li><cite>Non-RDF Source</cite>: Roughly equivalent to a datastream. A Non-RDF Source (or binary) is simply a bitstream (e.g. JPG, PDF, XML, MP3, etc.).</li>
+</ul>
+<p>###Datastreams
+In Islandora 7.x-2.x, RDF datastreams (RELS-EXT and RELS-INT) are stored as pure RDF in Fedora. Binary datastreams (files, images) are files or <cite>nonRdfResources</cite> (see [PCDM](<a class="reference external" href="https://github.com/duraspace/pcdm/wiki">https://github.com/duraspace/pcdm/wiki</a>)). Metadata datastreams (MODS, DC, DwC, PBCore, etc) are whatever you want them to be: either binary files of XML, or mapped to your choice of RDF.</p>
+<p>####PIDs
+Every object in a Fedora 3 repository had a Persistent Identifier following the pattern <cite>namespace:pid</cite>. Fedora 4 resources do not have PIDs. Instead, since Fedora 4 is an LDP server, their identifiers are fundamentally their URIs. The PIDs of objects migrated from a Fedora 3 repository can still be stored in Fedora 4, as additional properties on the new Fedora 4 resource.</p>
+<p>Since resources are stored as <cite>nodes</cite> on the Drupal side of Islandora 7.x-2.x, they also have Drupal UUIDs.</p>
+<p>##Islandora</p>
+<p>###Ingest</p>
+<p>In Fedora 3:
+* Go to a collection
+* Click <cite>Manage</cite>
+* Add an object
+* Fill out a metadata form
+* Upload object/Ingest</p>
+<p>In Fedora 4:
+* Click <cite>Add Content</cite> (like any Drupal node)
+* Select content type
+* Fill out a metadata form</p>
+<blockquote>
+<div><ul class="simple">
+<li>Add thumbnail, select parent collection, upload object, configure standard Drupal node options (comments, url path, etc)</li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li>Ingest occurs asynchronously soon after.</li>
+</ul>
+<p>###Collections
+Because objects in Fedora 3 were stored in a flat graph structure instead of a hierarchy, what were presented as collection in Islandora 7.x-1.x were actually objects on the same level as their child objects, with the &#8216;container&#8217; or &#8216;folder&#8217; aspect of them being a fiction for display created by the relationships between the objects. In Fedora 4, resources do have a true hierarchical structure and must have a <cite>fedora:hasParent</cite> relationship to know where they belong in a given repository. Indeed, to migrate objects over from Fedora 3 to Fedora 4, parents must arrive before their children. In its current incarnation, all objects in a 7.x-2.x repository have the Fedora root as a parent and relationships are managed via the <code class="docutils literal"><span class="pre">`pcdm:hasMember`</span></code> predicate.</p>
+<p>In its current incarnation, Islandora 7.x-2.x does not include a default display for collections. Instead, Drupal Views can be used to build collections around the <cite>pcdm:hasMember</cite> value. For more information, please see [How To Create A Collection View]()).</p>
+<p>###Forms
+<cite>Islandora XML Form Builder</cite> has not yet been replicated in Islandora 7.x-2.x. Instead, ingest forms can be edited as <cite>content types</cite> in Drupal, using basic Drupal field management and display tools, and then mapped to RDF in Fedora. For more information, please see [Editing the Basic Image Form](editing-basic-image-form-in-islandora-7.x-2.x.md) or Drupal.org&#8217;s [Working with content types and fields (Drupal 7 and later)](<a class="reference external" href="https://www.drupal.org/documentation/modules/field-ui">https://www.drupal.org/documentation/modules/field-ui</a>)</p>
+<p>###Derivatives
+In Islandora 7.x-2.x, derivatives are done with <cite>Camel</cite>. If you used microservices in 7.x-1.x, this will feel very familiar. When an object is created, a message is sent to a queue, and Camel processes it, using rules to figure out what derivative code to run. The aforementioned derivative code (i.e. the calls to ffmpeg, imagemagick, etc) are written in Java (or PHP that is NON-DRUPAL-RELATED.)</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user-documentation/2xfor1x.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, islandora community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/user-documentation/2xfor1x.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

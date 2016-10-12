@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &#8212; docstest2-claw-kimpham54 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="docstest2-claw-kimpham54 1.0.1 documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p># version 8.x-1.0</p>
+<p># ![PDX](<a class="reference external" href="https://cloud.githubusercontent.com/assets/2371345/15409611/e5906042-1deb-11e6-9a72-e5186f7c033d.png">https://cloud.githubusercontent.com/assets/2371345/15409611/e5906042-1deb-11e6-9a72-e5186f7c033d.png</a>) PDX</p>
+<p>[![Latest Stable Version](<a class="reference external" href="https://img.shields.io/packagist/v/Islandora/PDX.svg?style=flat-square)](https://packagist.org/packages/islandora/PDX">https://img.shields.io/packagist/v/Islandora/PDX.svg?style=flat-square)](https://packagist.org/packages/islandora/PDX</a>)
+[![Minimum PHP Version](<a class="reference external" href="https://img.shields.io/badge/php-%3E%3D%205.5-8892BF.svg?style=flat-square)](https://php.net/">https://img.shields.io/badge/php-%3E%3D%205.5-8892BF.svg?style=flat-square)](https://php.net/</a>)
+[![Downloads](<a class="reference external" href="https://img.shields.io/packagist/dt/islandora/PDX.svg?style=flat-square)](https://packagist.org/packages/islandora/PDX">https://img.shields.io/packagist/dt/islandora/PDX.svg?style=flat-square)](https://packagist.org/packages/islandora/PDX</a>)
+[![Build Status](<a class="reference external" href="https://travis-ci.org/Islandora-CLAW/pdx.svg?branch=master)](https://travis-ci.org/Islandora-CLAW/pdx">https://travis-ci.org/Islandora-CLAW/pdx.svg?branch=master)](https://travis-ci.org/Islandora-CLAW/pdx</a>)
+[![Contribution Guidelines](<a class="reference external" href="http://img.shields.io/badge/CONTRIBUTING-Guidelines-blue.svg)](./CONTRIBUTING.md">http://img.shields.io/badge/CONTRIBUTING-Guidelines-blue.svg)](./CONTRIBUTING.md</a>)
+[![LICENSE](<a class="reference external" href="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](./LICENSE">https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](./LICENSE</a>)
+[![codecov](<a class="reference external" href="https://codecov.io/gh/Islandora-CLAW/pdx/branch/master/graph/badge.svg)](https://codecov.io/gh/Islandora-CLAW/pdx">https://codecov.io/gh/Islandora-CLAW/pdx/branch/master/graph/badge.svg)](https://codecov.io/gh/Islandora-CLAW/pdx</a>)</p>
+<p>This is a top level container for the various PCDM related Islandora CLAW microservices. It allows you to mount the various endpoints at one port on one machine and makes a development vagrant/docker configuration easier to produce.</p>
+<p>## Requirements</p>
+<ul class="simple">
+<li>PHP 5.5+</li>
+<li>[Composer](<a class="reference external" href="https://getcomposer.org/">https://getcomposer.org/</a>)</li>
+<li>[Chullo](<a class="reference external" href="https://github.com/Islandora-CLAW/chullo">https://github.com/Islandora-CLAW/chullo</a>)</li>
+<li>[Crayfish](<a class="reference external" href="https://github.com/Islandora-CLAW/Crayfish">https://github.com/Islandora-CLAW/Crayfish</a>)</li>
+<li>[Fedora 4](<a class="reference external" href="https://github.com/fcrepo4/fcrepo4">https://github.com/fcrepo4/fcrepo4</a>)</li>
+<li>A triplestore (i.e. [Blazegraph](<a class="reference external" href="https://www.blazegraph.com/download/">https://www.blazegraph.com/download/</a>), [Fuseki](<a class="reference external" href="https://jena.apache.org/documentation/fuseki2/">https://jena.apache.org/documentation/fuseki2/</a>), etc)</li>
+</ul>
+<p>## Installation</p>
+<p>You will need to copy the configuration file [_example.settings.yml_](config/example.settings.yml) to either <strong>settings.yml</strong> or <strong>settings.dev.yml</strong> (if $app[&#8216;debug&#8217;] = TRUE) and change any required settings.</p>
+<p>You can run just this service using PHP by executing</p>
+<p><code class="docutils literal"><span class="pre">`</span>
+<span class="pre">php</span> <span class="pre">-S</span> <span class="pre">localhost:&lt;some</span> <span class="pre">port&gt;</span> <span class="pre">-t</span> <span class="pre">src/</span> <span class="pre">src/index.php</span>
+<span class="pre">`</span></code>
+from this directory to start it running.</p>
+<p>## Services</p>
+<p>This mounts all the various individual microservices under the <cite>/islandora</cite> URL, so you currently have access to</p>
+<ul class="simple">
+<li>CollectionService at <cite>/islandora/collection</cite></li>
+</ul>
+<p>See the individual services for more information on their endpoints.</p>
+<p>### CollectionService</p>
+<p>This an Islandora PHP Microservice to create PCDM:Collections and add/remove PCDM:Objects to a PCDM:Collection.</p>
+<p>#### Services</p>
+<p>The CollectionService provides the following endpoints for HTTP requests.</p>
+<p><strong>Note</strong>: The UUID is of the form <cite>18c67794-366c-a6d9-af13-b3464a1fb9b5</cite></p>
+<ol class="arabic">
+<li><p class="first">POST to <cite>/collection</cite></p>
+<blockquote>
+<div><p>for creating a new PCDM:Collection at the root level</p>
+</div></blockquote>
+</li>
+<li><p class="first">POST to <cite>/collection/{uuid}</cite></p>
+<blockquote>
+<div><p>for creating a new PCDM:Collection as a child of resource {uuid}</p>
+</div></blockquote>
+</li>
+</ol>
+<ol class="arabic" start="2">
+<li><p class="first">POST to <cite>/collection/{uuid}/member/{member}</cite></p>
+<blockquote>
+<div><p>for adding the resource identifier by the UUID {member} to the collection identified by the UUID {uuid}</p>
+</div></blockquote>
+</li>
+</ol>
+<ol class="arabic" start="2">
+<li><p class="first">DELETE to <cite>/collection/{uuid}/member/{member}</cite></p>
+<blockquote>
+<div><p>for removing the resource identifier by the UUID {member} from the collection identified by the UUID {uuid}</p>
+</div></blockquote>
+</li>
+</ol>
+<p>## Sponsors</p>
+<ul class="simple">
+<li>UPEI</li>
+<li>discoverygarden inc.</li>
+<li>LYRASIS</li>
+<li>McMaster University</li>
+<li>University of Limerick</li>
+<li>York University</li>
+<li>University of Manitoba</li>
+<li>Simon Fraser University</li>
+<li>PALS</li>
+<li>American Philosophical Society</li>
+<li>common media inc.</li>
+</ul>
+<p>## Maintainers</p>
+<ul class="simple">
+<li>[Jared Whiklo](<a class="reference external" href="https://github.com/whikloj">https://github.com/whikloj</a>)</li>
+<li>[Diego Pino](<a class="reference external" href="https://github.com/diegopino">https://github.com/diegopino</a>)</li>
+<li>[Nick Ruest](<a class="reference external" href="https://github.com/ruebot">https://github.com/ruebot</a>)</li>
+</ul>
+<p>## License</p>
+<p>[MIT](<a class="reference external" href="https://opensource.org/licenses/MIT">https://opensource.org/licenses/MIT</a>)</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/pdx/README.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, islandora community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/pdx/README.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

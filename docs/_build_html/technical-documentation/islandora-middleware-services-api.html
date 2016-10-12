@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &#8212; docstest2-claw-kimpham54 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="docstest2-claw-kimpham54 1.0.1 documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p># version 8.x-1.0</p>
+<p>## Transaction Service (done)</p>
+<p>Used to start, commit, and rollback transactions.</p>
+<p><strong>Endpoint</strong>: <a class="reference external" href="http://localhost:8282/islandora/transaction/">http://localhost:8282/islandora/transaction/</a></p>
+<p><strong>Actions</strong>:</p>
+<ul>
+<li><p class="first"><cite>POST</cite> <a class="reference external" href="http://localhost:8282/islandora-services/transaction/">http://localhost:8282/islandora-services/transaction/</a></p>
+<blockquote>
+<div><ul class="simple">
+<li>Creates a transaction in fedora, returning the id of the newly made transaction</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>POST</cite> <a class="reference external" href="http://localhost:8282/islandora-services/transaction">http://localhost:8282/islandora-services/transaction</a>/{tx_id}/extend</p>
+<blockquote>
+<div><ul class="simple">
+<li>Extends a transaction</li>
+<li>Returns 204 - No Content</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>POST</cite> <a class="reference external" href="http://localhost:8282/islandora-services/transaction">http://localhost:8282/islandora-services/transaction</a>/{tx_id}/commit</p>
+<blockquote>
+<div><ul class="simple">
+<li>Commits a transaction</li>
+<li>Returns 204 - No Content</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>POST</cite> <a class="reference external" href="http://localhost:8282/islandora-services/transaction">http://localhost:8282/islandora-services/transaction</a>/{tx_id}/rollback</p>
+<blockquote>
+<div><ul class="simple">
+<li>Rolls back a transaction</li>
+<li>Returns 204 - No Content</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>## Resource Service (done)</p>
+<p>Exposes basic CRUD operations on repository resources identified by a UUID.</p>
+<p><strong>Endpoint</strong>: <a class="reference external" href="http://localhost:8282/islandora/resource/">http://localhost:8282/islandora/resource/</a></p>
+<p><strong>Actions</strong>:</p>
+<ul>
+<li><p class="first"><cite>GET</cite> <a class="reference external" href="http://localhost:8282/islandora/resource">http://localhost:8282/islandora/resource</a>/{uuid}?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Returns RDF metadata for the resource identified by the provided UUID.  Respects all headers the Fedora 4 API respects.</li>
+<li>Optional transaction id will ensure the returned the RDF represents the current status of the resource within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>POST</cite> <a class="reference external" href="http://localhost:8282/islandora/resource/">http://localhost:8282/islandora/resource/</a>?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Creates a resource in Fedora 4.  Respects all headers the Fedora 4 API respects.</li>
+<li>Optional transaction id will ensure the resource is created within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>PUT</cite> <a class="reference external" href="http://localhost:8282/islandora/resource">http://localhost:8282/islandora/resource</a>/{uuid}?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Updates a resource in Fedora 4.  Respects all headers the Fedora 4 API respects.</li>
+<li>Optional transaction id will ensure the resource is updated within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>PATCH</cite> <a class="reference external" href="http://localhost:8282/islandora/resource">http://localhost:8282/islandora/resource</a>/{uuid}?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Applies a SPARQL/Update query against a resource in Fedora 4.  Respects all headers the Fedora 4 API respects.</li>
+<li>Optional transaction id will ensure the resource is updated within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>DELETE</cite> <a class="reference external" href="http://localhost:8282/islandora-services/resource">http://localhost:8282/islandora-services/resource</a>/{uuid}?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Deletes the resource in Fedora 4.</li>
+<li>Optional transaction id will ensure the resource is deleted within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>## Collection Service (Sprint 003)</p>
+<p>Convenience operations for pcdm:Collections in Fedora 4.</p>
+<p><strong>Endpoint</strong>: <a class="reference external" href="http://localhost:8282/islandora/collection/">http://localhost:8282/islandora/collection/</a></p>
+<p><strong>Actions</strong>:</p>
+<ul>
+<li><p class="first"><cite>POST</cite> <a class="reference external" href="http://localhost:8282/islandora/collection/">http://localhost:8282/islandora/collection/</a>?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Creates a pcdm:Collection in Fedora 4.  Respects all headers the Fedora 4 API respects.  Creates the appropriate indirect containers, with slug &#8220;members&#8221;, to manage the pcdm:hasMember relationship or its inverse.</li>
+<li>Optional transaction id will ensure the resources are created within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>## Object Service</p>
+<p>Convenience operations for pcdm:Objects in Fedora 4.</p>
+<p><strong>Endpoint</strong>: <a class="reference external" href="http://localhost:8282/islandora/object/">http://localhost:8282/islandora/object/</a></p>
+<p><strong>Actions</strong>:</p>
+<ul>
+<li><p class="first"><cite>POST</cite> <a class="reference external" href="http://localhost:8282/islandora/object/">http://localhost:8282/islandora/object/</a>?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Creates a pcdm:Object in Fedora 4.  Respects all headers the Fedora 4 API respects.  Adds the appropriate containers to manage the pcdm:hasMember and pcdm:hasFile relationships and their inverses.</li>
+<li>Optional transaction id will ensure the resources are created within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>## Membership Service</p>
+<p>Operations to add/remove members from pcdm:Objects and pcdm:Collections.</p>
+<p><strong>Endpoints</strong>:</p>
+<p><a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{uuid}/members</p>
+<p><a class="reference external" href="http://localhost:8282/islandora/collection">http://localhost:8282/islandora/collection</a>/{uuid}/members</p>
+<p><strong>Actions</strong>:</p>
+<p>For brevity, only one of the two endpoints is described in the following section.</p>
+<ul>
+<li><p class="first"><cite>GET</cite> <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{parent_uuid}/members?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Retrieves a list of members associated with object identified by parent_uuid.</li>
+<li>Optional transaction id will return the state of the list of members within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>POST</cite> <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{parent_uuid}/members/{child_uuid}?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Adds the resource identified by child_uuid to the object/collection identified by parent_uuid</li>
+<li>Optional transaction id will ensure the operation is performed within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>DELETE</cite> <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{parent_uuid}/members/{child_uuid}?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Removes the resource identified by child_uuid from the object/collection identified by parent_uuid</li>
+<li>Optional transaction id will ensure the operation is performed within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>## File Service</p>
+<p>Lists all files for a pcdm:Object.</p>
+<p><strong>Endpoint</strong>:  <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{uuid}/files</p>
+<p><strong>Actions</strong>:</p>
+<ul>
+<li><p class="first"><cite>GET</cite> <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{parent_uuid}/files?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Retrieves a list of files associated with object identified by parent_uuid.</li>
+<li>Optional transaction id will return the state of the list of files within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>## Thumbnail Service</p>
+<p>CRUD operations for thumbnails</p>
+<p><strong>Endpoint</strong>:  <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{uuid}/thumbnail</p>
+<p><strong>Actions</strong>:</p>
+<ul>
+<li><p class="first"><cite>GET</cite> <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{uuid}/thumbnail?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Retrieves the thumbnail for the object identified by the provided uuid.  Setting the accept header to an RDF mimetype will return the RDF for the file.  Setting it to a binary mimetype will return the contents of the file.</li>
+<li>Optional transaction id will return the thumbnail within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>PUT</cite> <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{uuid}/thumbnail?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Saves the thumbnail provided in the message body to the object identified by the provided uuid.</li>
+<li>Optional transaction id will save the thumbnail within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>DELETE</cite> <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{uuid}/thumbnail?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Removes the thumbnail for the object identified by the provided uuid.</li>
+<li>Optional transaction id will delete the thumbnail within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>## Preservation Master Service</p>
+<p>CRUD operations for preservation masters</p>
+<p><strong>Endpoint</strong>:  <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{uuid}/preservationMaster</p>
+<p><strong>Actions</strong>:</p>
+<ul>
+<li><p class="first"><cite>GET</cite> <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{uuid}/preservationMaster?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Retrieves the preservation master for the object identified by the provided uuid.  Setting the accept header to an RDF mimetype will return the RDF for the file.  Setting it to a binary mimetype will return the contents of the file.</li>
+<li>Optional transaction id will return the file within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>PUT</cite> <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{uuid}/preservationMaster?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Saves the preservation master provided in the message body to the object identified by the provided uuid.</li>
+<li>Optional transaction id will save the file within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+<li><p class="first"><cite>DELETE</cite> <a class="reference external" href="http://localhost:8282/islandora/object">http://localhost:8282/islandora/object</a>/{uuid}/preservationMaster?tx={tx_id}</p>
+<blockquote>
+<div><ul class="simple">
+<li>Removes the preservation master for the object identified by the provided uuid.</li>
+<li>Optional transaction id will delete the file within said transaction.</li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>## Original Document</p>
+<p>Lives on as a Google Document located [here](<a class="reference external" href="https://docs.google.com/document/d/1FxnS28S_I18LnxoVT6J2k7T-m70xJ4F57pyRqBTI7EE/edit">https://docs.google.com/document/d/1FxnS28S_I18LnxoVT6J2k7T-m70xJ4F57pyRqBTI7EE/edit</a>).</p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/technical-documentation/islandora-middleware-services-api.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, islandora community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/technical-documentation/islandora-middleware-services-api.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

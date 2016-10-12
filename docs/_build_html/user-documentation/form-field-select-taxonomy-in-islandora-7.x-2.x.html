@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>&lt;no title&gt; &#8212; docstest2-claw-kimpham54 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="docstest2-claw-kimpham54 1.0.1 documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p># Creating a Taxonomy you can use in your Islandora Content Type</p>
+<p>## Taxonomies</p>
+<p>### Drupal vs Islandora XML Forms
+Taxonomies and the ability to incorporate them into Islandora XML Forms have been something the community has mostly worked around.  Drupal&#8217;s taxonomy module allows the user to create a standard set of terms that can be leveraged in a content type.  The select field type in Islandora XML Forms becomes unmanageable when you had more than 10 items (it was easier to add the items in plain XML, than it was to add them through the XML Forms interface).  Drupal taxonomies will hopefully simplify the standardization, maintenance and use of vocabularies within the Islandora framework.</p>
+<p>### Examples</p>
+<p>#### Adding a Drupal Taxonomy based on DublinCore&#8217;s DCMI Type Vocabulary
+&#8220;The [DCMI Type Vocabulary](<a class="reference external" href="http://dublincore.org/documents/2000/07/11/dcmi-type-vocabulary/">http://dublincore.org/documents/2000/07/11/dcmi-type-vocabulary/</a>) provides a general, cross-domain list of approved terms that may be used as values for the Type element to identify the genre of a resource.&#8221;&lt;sup&gt;1&lt;/sup&gt;</p>
+<p>The goal of this task is to create a taxonomy that can be used as a field with the field type of <cite>Term Reference</cite> and uses the <cite>Select</cite> Widget.  <cite>Term Reference</cite> will draw on our DCMI Type taxonomy.</p>
+<p><strong>Create a new Taxonomy</strong></p>
+<blockquote>
+<div><ol class="arabic simple">
+<li>To create a new taxonomy, select <cite>Structure &gt; Taxonomy &gt; Add taxonomy</cite>. I&#8217;m going to call my taxonomy <cite>DCMI Type</cite>.</li>
+</ol>
+<blockquote>
+<div>![Add a new taxonomy](<a class="reference external" href="https://lh3.googleusercontent.com/_wAZTJPbWsVt8EebdvlX7xkQbujV-8QJsVGeZqmPqQQ=s700">https://lh3.googleusercontent.com/_wAZTJPbWsVt8EebdvlX7xkQbujV-8QJsVGeZqmPqQQ=s700</a> &#8220;Add a new taxonomy&#8221;)</div></blockquote>
+<ol class="arabic simple" start="2">
+<li>The next thing you&#8217;ll want to do is select <cite>+Add term</cite> to add terms to your taxonomy. The DCMI has [provided a list](<a class="reference external" href="http://dublincore.org/documents/2012/06/14/dcmi-terms/?v=elements#H7">http://dublincore.org/documents/2012/06/14/dcmi-terms/?v=elements#H7</a>) with definitions.</li>
+</ol>
+<blockquote>
+<div>![Add Taxonomy Term](<a class="reference external" href="https://lh3.googleusercontent.com/hz_Ybz9XmbYBM8a5QaTaCcXykt-SH88VBUX3ubuQxhc=s700">https://lh3.googleusercontent.com/hz_Ybz9XmbYBM8a5QaTaCcXykt-SH88VBUX3ubuQxhc=s700</a> &#8220;Add Taxonomy Term&#8221;)</div></blockquote>
+<ol class="arabic simple" start="3">
+<li>Keep adding terms until you&#8217;ve captured the terms and save your taxonomy.</li>
+</ol>
+<blockquote>
+<div>![DCMI Taxonomy](<a class="reference external" href="https://lh3.googleusercontent.com/hYY0ldThWXSMQyaG6aiPY00fpy031H1Hd7ReWJNAvPY=s700">https://lh3.googleusercontent.com/hYY0ldThWXSMQyaG6aiPY00fpy031H1Hd7ReWJNAvPY=s700</a> &#8220;DCMI Taxonomy&#8221;)</div></blockquote>
+</div></blockquote>
+<p>See [Editing an Ingest form](editing-basic-image-form-in-islandora-7.x-2.x.md) to see how we create a new field in the Basic Image content type.</p>
+<hr class="docutils" />
+<p>&lt;sup&gt;1&lt;/sup&gt; <a class="reference external" href="http://dublincore.org/documents/2000/07/11/dcmi-type-vocabulary/">http://dublincore.org/documents/2000/07/11/dcmi-type-vocabulary/</a></p>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/user-documentation/form-field-select-taxonomy-in-islandora-7.x-2.x.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, islandora community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/user-documentation/form-field-select-taxonomy-in-islandora-7.x-2.x.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

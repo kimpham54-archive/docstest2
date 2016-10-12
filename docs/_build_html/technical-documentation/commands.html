@@ -1,0 +1,496 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>} &#8212; docstest2-claw-kimpham54 1.0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="top" title="docstest2-claw-kimpham54 1.0.1 documentation" href="../index.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <p># version 8.x-1.0</p>
+<p># Islandora Commands</p>
+<p>## Introduction</p>
+<p>Sometimes you need to do deeper logic in a Camel route than can realistically be done within a Blueprint XML. Since Apache Camel is an <em>integration</em> framework, we can call out to command line PHP instead of having to use Java for the majority of our tasks. Though Java is still always an option to those who are inclined (and may be required for more advanced use cases), there are many advantages to sticking with PHP. Not only is it the language we&#8217;re most comfortable with as a community, but its also well suited for dealing with both JSON-LD from Fedora and node content from Drupal (much more so than Java). We also get the full advantages of modern PHP, including object oriented programming and tools like Composer.</p>
+<p>## Basic Usage</p>
+<p>In your git project&#8217;s root, head on over to the <cite>bin</cite> folder of the <cite>camel/commands</cite> directory and execute the <cite>islandora.php</cite> script to see what it has to say.</p>
+<p><a href="#id1"><span class="problematic" id="id2">``</span></a><a href="#id3"><span class="problematic" id="id4">`</span></a>bash
+<a class="reference external" href="mailto:vagrant&#37;&#52;&#48;islandora">vagrant<span>&#64;</span>islandora</a>:~/islandora$ cd camel/commands/bin
+<a class="reference external" href="mailto:vagrant&#37;&#52;&#48;islandora">vagrant<span>&#64;</span>islandora</a>:~/islandora/camel/commands/bin$ php islandora.php
+Islandora Command Tool version 0.0.0-SNAPSHOT</p>
+<dl class="docutils">
+<dt>Usage:</dt>
+<dd>command [options] [arguments]</dd>
+<dt>Options:</dt>
+<dd><table class="first docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>Display this help message</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-q</span>, <span class="option">--quiet</span></kbd></td>
+<td>Do not output any message</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-V</span>, <span class="option">--version</span></kbd></td>
+<td>Display this application version
+&#8211;ansi      Force ANSI output
+&#8211;no-ansi     Disable ANSI output</td></tr>
+</tbody>
+</table>
+<p class="last">-n, &#8211;no-interaction Do not ask any interactive question
+-v|vv|vvv, &#8211;verbose Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug</p>
+</dd>
+<dt>Available commands:</dt>
+<dd>help              Displays help for a command
+list              Lists commands
+collectionService
+collectionService:nodeToSparql Converts Drupal node JSON for a collection to a SPARQL Update query
+rdf
+rdf:createNode         Creates a Drupal node from Fedora RDF.
+rdf:extractContentType     Extracts a Drupal content type from Fedora RDF.
+rdf:updateNode         Updates a Drupal node from Fedora RDF.</dd>
+</dl>
+<p><a href="#id5"><span class="problematic" id="id6">``</span></a>`
+Wow, that&#8217;s a lot. How did we get all that nice output? It&#8217;s because we&#8217;re using the Symfony Console component as a framework for our script. We get all kinds of stuff for free because of it, including versioning, exception catching, and this helpful message.</p>
+<p>As you can see, this tool expects a command to be provided. Notice that the commands are even namespaced! Normally, commands would accept arguments and parameters optionally after the command. But from Camel, message bodies are piped to the tool using STDIN, which the tool will gladly accept. Let&#8217;s try running a command that will convert a node represented in JSON from Drupal into a SPARQL update query. First, we&#8217;ll save the input to a file so that when we run the command we can just dump its contents into STDIN to emulate how Camel behaves. Go find a node on your site and get its UUID by looking at its devel tab.</p>
+<p>PUT PICTURE OF DEVEL TAB HERE</p>
+<p>You can get its JSON representation by visiting <cite>http://yoursite/islandora/node/your_nodes_uuid</cite>. If you&#8217;re running on the vagrant environment, and have a uuid of 38f7d551-28f7-49ac-9ceb-d6adcc6cc9c0, then the url would look like <cite>localhost:8000/islandora/node/38f7d551-28f7-49ac-9ceb-d6adcc6cc9c0</cite>.</p>
+<p>PUT A PICTURE OF THE JSON OUTPUT HERE</p>
+<p>Save the response somewhere, like <cite>/tmp/node.json</cite>. Then you can run the command like so:
+<a href="#id7"><span class="problematic" id="id8">``</span></a><a href="#id9"><span class="problematic" id="id10">`</span></a>bash
+<a class="reference external" href="mailto:vagrant&#37;&#52;&#48;islandora">vagrant<span>&#64;</span>islandora</a>:~/islandora/camel/commands/bin$ cat /tmp/node.json | php islandora.php collectionService:nodeToSparql
+PREFIX islandora: &lt;http://islandora.ca/ontology/v2/&gt;
+PREFIX rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;
+PREFIX fedora: &lt;http://fedora.info/definitions/v4/repository#&gt;
+PREFIX pcdm: &lt;http://pcdm.org/models#&gt;
+PREFIX nfo: &lt;http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/v1.2/&gt;
+PREFIX nt: &lt;http://www.jcp.org/jcr/nt/1.0&gt;
+PREFIX mix: &lt;http://www.jcp.org/jcr/mix/1.0&gt;
+PREFIX ldp: &lt;http://www.w3.org/ns/ldp#&gt;
+PREFIX dc11: &lt;http://purl.org/dc/elements/1.1/&gt;
+PREFIX modsrdf: &lt;http://www.loc.gov/mods/modsrdf/v1#&gt;
+PREFIX content: &lt;http://purl.org/rss/1.0/modules/content/&gt;
+PREFIX dc: &lt;http://purl.org/dc/terms/&gt;
+PREFIX foaf: &lt;http://xmlns.com/foaf/0.1/&gt;
+PREFIX og: &lt;http://ogp.me/ns#&gt;
+PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+PREFIX sioc: &lt;http://rdfs.org/sioc/ns#&gt;
+PREFIX sioct: &lt;http://rdfs.org/sioc/types#&gt;
+PREFIX skos: &lt;http://www.w3.org/2004/02/skos/core#&gt;
+PREFIX xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt;</p>
+<dl class="docutils">
+<dt>DELETE WHERE {</dt>
+<dd>&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; ?o0 .
+&lt;&gt; &lt;<a class="reference external" href="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/v1.2/uuid">http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/v1.2/uuid</a>&gt; ?o1 .
+&lt;&gt; &lt;<a class="reference external" href="http://purl.org/dc/terms/title">http://purl.org/dc/terms/title</a>&gt; ?o2 .
+&lt;&gt; &lt;<a class="reference external" href="http://purl.org/dc/terms/date">http://purl.org/dc/terms/date</a>&gt; ?o3 .
+&lt;&gt; &lt;<a class="reference external" href="http://purl.org/dc/terms/created">http://purl.org/dc/terms/created</a>&gt; ?o4 .
+&lt;&gt; &lt;<a class="reference external" href="http://purl.org/dc/terms/modified">http://purl.org/dc/terms/modified</a>&gt; ?o5 .
+&lt;&gt; &lt;<a class="reference external" href="http://rdfs.org/sioc/ns#has_creator">http://rdfs.org/sioc/ns#has_creator</a>&gt; ?o6 .
+&lt;&gt; &lt;<a class="reference external" href="http://xmlns.com/foaf/0.1/name">http://xmlns.com/foaf/0.1/name</a>&gt; ?o7 .</dd>
+</dl>
+<p>};
+INSERT DATA {</p>
+<blockquote>
+<div>&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; &lt;<a class="reference external" href="http://www.w3.org/ns/ldp#RDFSource">http://www.w3.org/ns/ldp#RDFSource</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; &lt;<a class="reference external" href="http://www.w3.org/ns/ldp#Container">http://www.w3.org/ns/ldp#Container</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; &lt;<a class="reference external" href="http://www.jcp.org/jcr/nt/1.0hierarchyNode">http://www.jcp.org/jcr/nt/1.0hierarchyNode</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; &lt;<a class="reference external" href="http://www.jcp.org/jcr/nt/1.0folder">http://www.jcp.org/jcr/nt/1.0folder</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; &lt;<a class="reference external" href="http://www.jcp.org/jcr/nt/1.0base">http://www.jcp.org/jcr/nt/1.0base</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; &lt;<a class="reference external" href="http://www.jcp.org/jcr/mix/1.0referenceable">http://www.jcp.org/jcr/mix/1.0referenceable</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; &lt;<a class="reference external" href="http://fedora.info/definitions/v4/repository#Resource">http://fedora.info/definitions/v4/repository#Resource</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; &lt;<a class="reference external" href="http://fedora.info/definitions/v4/repository#Container">http://fedora.info/definitions/v4/repository#Container</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; &lt;<a class="reference external" href="http://pcdm.org/models#Collection">http://pcdm.org/models#Collection</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">http://www.w3.org/1999/02/22-rdf-syntax-ns#type</a>&gt; &lt;<a class="reference external" href="http://islandora.ca/ontology/v2/collection">http://islandora.ca/ontology/v2/collection</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/v1.2/uuid">http://www.semanticdesktop.org/ontologies/2007/03/22/nfo/v1.2/uuid</a>&gt; &#8220;38f7d551-28f7-49ac-9ceb-d6adcc6cc9c0&#8221; .
+&lt;&gt; &lt;<a class="reference external" href="http://purl.org/dc/terms/title">http://purl.org/dc/terms/title</a>&gt; &#8220;Test Collection&#8221; .
+&lt;&gt; &lt;<a class="reference external" href="http://purl.org/dc/terms/date">http://purl.org/dc/terms/date</a>&gt; &#8220;1970-01-01T00:33:35+00:00&#8221;^^&lt;<a class="reference external" href="http://www.w3.org/2001/XMLSchema#dateTime">http://www.w3.org/2001/XMLSchema#dateTime</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://purl.org/dc/terms/created">http://purl.org/dc/terms/created</a>&gt; &#8220;1970-01-01T00:33:35+00:00&#8221;^^&lt;<a class="reference external" href="http://www.w3.org/2001/XMLSchema#dateTime">http://www.w3.org/2001/XMLSchema#dateTime</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://purl.org/dc/terms/modified">http://purl.org/dc/terms/modified</a>&gt; &#8220;2015-07-16T13:49:27+00:00&#8221;^^&lt;<a class="reference external" href="http://www.w3.org/2001/XMLSchema#dateTime">http://www.w3.org/2001/XMLSchema#dateTime</a>&gt; .
+&lt;&gt; &lt;<a class="reference external" href="http://rdfs.org/sioc/ns#has_creator">http://rdfs.org/sioc/ns#has_creator</a>&gt; 1 .
+&lt;&gt; &lt;<a class="reference external" href="http://xmlns.com/foaf/0.1/name">http://xmlns.com/foaf/0.1/name</a>&gt; &#8220;admin&#8221; .</div></blockquote>
+<div class="section" id="id11">
+<h1>}<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h1>
+<p>And you can see that we have our SPARQL output. Executing commands like this is a great way to test without having to trigger anything via Camel.</p>
+<p>If you are within a Camel route in the Blueprint DSL, the message body is automatically provided to the command, and you can utilize the Islandora component to execute one like so:
+<code class="docutils literal"><span class="pre">`xml</span>
+<span class="pre">&lt;to</span> <span class="pre">uri=&quot;islandora:namespace:command&quot;/&gt;</span>
+<span class="pre">`</span></code></p>
+<p>For example, in order to run the same command we just did from inside Camel, you can simply do this (assuming the message body is the same JSON data from Drupal services):
+<code class="docutils literal"><span class="pre">`xml</span>
+<span class="pre">&lt;to</span> <span class="pre">uri=&quot;islandora:collectionService:nodeToSparql&quot;/&gt;</span>
+<span class="pre">`</span></code></p>
+<p>See the documentation on the Islandora command for more information about using a command from within Camel.</p>
+<p>## Creating a new Command
+Let&#8217;s go through the steps required to make your own Camel command. As is tradition, we&#8217;re going to make a simple &#8220;Hello World&#8221; command.</p>
+<p>All that&#8217;s required for creating a command is to extend IslandoraCommand (or one of its subclasses). It already handles everything for you, including accepting input from STDIN. The bare minimum that is required of an IslandoraCommand is to implement two methods: <cite>configure()</cite> and <cite>execute(InputInterface $input, OutputInterface $output)</cite>. From your project&#8217;s root, create the <cite>camel/commands/src/Greeter</cite> directory and open up a new file called <cite>HelloGreeter.php</cite>. Place the following code inside and be sure to save it to the newly created <cite>Greeter</cite> directory.
+<a href="#id12"><span class="problematic" id="id13">``</span></a><a href="#id14"><span class="problematic" id="id15">`</span></a>php</p>
+<p>&lt;?php</p>
+<dl class="docutils">
+<dt>/**</dt>
+<dd><ul class="first simple">
+<li>This file is part of Islandora.</li>
+<li></li>
+<li>For the full copyright and license information, please view the LICENSE</li>
+<li>file that was distributed with this source code.</li>
+<li></li>
+<li>PHP Version 5.5.9</li>
+<li></li>
+<li>&#64;category Islandora</li>
+<li>&#64;package IslandoraGreeter</li>
+<li>&#64;author  Your Name &lt;<a class="reference external" href="mailto:your_email&#37;&#52;&#48;your_employer&#46;com">your_email<span>&#64;</span>your_employer<span>&#46;</span>com</a>&gt;</li>
+<li>&#64;license <a class="reference external" href="http://www.gnu.org/licenses/gpl-3.0.en.html">http://www.gnu.org/licenses/gpl-3.0.en.html</a> GPL</li>
+<li>&#64;link   <a class="reference external" href="http://www.islandora.ca">http://www.islandora.ca</a></li>
+</ul>
+<p class="last"><a href="#id16"><span class="problematic" id="id17">*</span></a>/</p>
+</dd>
+</dl>
+<p>use IslandoraIslandoraCommand;
+use SymfonyComponentConsoleInputInputInterface;
+use SymfonyComponentConsoleOutputOutputInterface;</p>
+<dl class="docutils">
+<dt>/**</dt>
+<dd><ul class="first simple">
+<li>Says hello!</li>
+<li></li>
+<li>&#64;category Islandora</li>
+<li>&#64;package IslandoraGreeter</li>
+<li>&#64;author  Your Name &lt;<a class="reference external" href="mailto:your_email&#37;&#52;&#48;your_employer&#46;com">your_email<span>&#64;</span>your_employer<span>&#46;</span>com</a>&gt;</li>
+<li>&#64;license <a class="reference external" href="http://www.gnu.org/licenses/gpl-3.0.en.html">http://www.gnu.org/licenses/gpl-3.0.en.html</a> GPL</li>
+<li>&#64;link   <a class="reference external" href="http://www.islandora.ca">http://www.islandora.ca</a></li>
+</ul>
+<p class="last"><a href="#id18"><span class="problematic" id="id19">*</span></a>/</p>
+</dd>
+</dl>
+<p>class HelloGreeter extends IslandoraCommand
+{</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>/**</dt>
+<dd><ul class="first simple">
+<li>Sets command configuration.</li>
+<li></li>
+<li>&#64;return null</li>
+</ul>
+<p class="last"><a href="#id20"><span class="problematic" id="id21">*</span></a>/</p>
+</dd>
+</dl>
+<p>protected function configure()
+{</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>$this-&gt;setName(&#8216;greeter:hello&#8217;)</dt>
+<dd><dl class="first docutils">
+<dt>-&gt;setDescription(</dt>
+<dd>&#8220;Says hello!&#8221;</dd>
+</dl>
+<p class="last">);</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}</p>
+<dl class="docutils">
+<dt>/**</dt>
+<dd><ul class="first simple">
+<li>Says hello!</li>
+<li></li>
+<li>&#64;param InputInterface $input An InputInterface instance</li>
+<li>&#64;param OutputInterface $output An OutputInterface instance</li>
+<li></li>
+<li>&#64;return null</li>
+</ul>
+<p class="last"><a href="#id22"><span class="problematic" id="id23">*</span></a>/</p>
+</dd>
+</dl>
+<p>protected function execute(InputInterface $input, OutputInterface $output)
+{</p>
+<blockquote>
+<div>$name = $this-&gt;data;
+$output-&gt;writeln(&#8220;Hello &#8221; . trim($name) . &#8221;!&#8221;);</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</div>
+<div class="section" id="id24">
+<h1>}<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h1>
+<p>In the <cite>configure()</cite> method, we set some properties for the command. A command&#8217;s setters all return the command itself, so we can chain the calls together. We set the name of the command, complete with namespace and &#8216;:&#8217; delimiter. We also give a description of the command that will show up when listing available commands.</p>
+<p>The <cite>execute(InputInterface $input, OutputInterface $output)</cite> method is where we do our actual work. Since we extended Islandora command, all input from STDIN is provided as a String and can be accessed any time through <cite>$this-&gt;data</cite>.</p>
+<p>So let&#8217;s try it out! Go back to the <cite>camel/commands/bin</cite> directory and get a listing of all the commands to make sure it appears.</p>
+<p><a href="#id25"><span class="problematic" id="id26">``</span></a><a href="#id27"><span class="problematic" id="id28">`</span></a>bash
+<a class="reference external" href="mailto:vagrant&#37;&#52;&#48;islandora">vagrant<span>&#64;</span>islandora</a>:~/islandora/camel/commands/bin$ cd ~/islandora/camel/commands/bin
+<a class="reference external" href="mailto:vagrant&#37;&#52;&#48;islandora">vagrant<span>&#64;</span>islandora</a>:~/islandora/camel/commands/bin$ php islandora.php
+Islandora Command Tool version 0.0.0-SNAPSHOT</p>
+<dl class="docutils">
+<dt>Usage:</dt>
+<dd>command [options] [arguments]</dd>
+<dt>Options:</dt>
+<dd><table class="first docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>Display this help message</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-q</span>, <span class="option">--quiet</span></kbd></td>
+<td>Do not output any message</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-V</span>, <span class="option">--version</span></kbd></td>
+<td>Display this application version
+&#8211;ansi      Force ANSI output
+&#8211;no-ansi     Disable ANSI output</td></tr>
+</tbody>
+</table>
+<p class="last">-n, &#8211;no-interaction Do not ask any interactive question
+-v|vv|vvv, &#8211;verbose Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug</p>
+</dd>
+<dt>Available commands:</dt>
+<dd>help              Displays help for a command
+list              Lists commands
+collectionService
+collectionService:nodeToSparql Converts Drupal node JSON for a collection to a SPARQL Update query
+greeter
+greeter:hello          Says hello!
+rdf
+rdf:createNode         Creates a Drupal node from Fedora RDF.
+rdf:extractContentType     Extracts a Drupal content type from Fedora RDF.
+rdf:updateNode         Updates a Drupal node from Fedora RDF.</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">`</span>
+<span class="pre">And</span> <span class="pre">sure</span> <span class="pre">enough,</span> <span class="pre">it</span> <span class="pre">does!</span> <span class="pre">We</span> <span class="pre">now</span> <span class="pre">have</span> <span class="pre">the</span> <span class="pre">`greeter:hello`</span> <span class="pre">command</span> <span class="pre">from</span> <span class="pre">the</span> <span class="pre">`greeter`</span> <span class="pre">namespace!</span> <span class="pre">Let's</span> <span class="pre">use</span> <span class="pre">it!</span> <span class="pre">As</span> <span class="pre">is</span> <span class="pre">tradition,</span> <span class="pre">we're</span> <span class="pre">going</span> <span class="pre">to</span> <span class="pre">greet</span> <span class="pre">the</span> <span class="pre">world.</span>
+<span class="pre">```bash</span>
+<span class="pre">vagrant&#64;islandora:~/islandora/camel/commands/bin$</span> <span class="pre">echo</span> <span class="pre">&quot;World&quot;</span> <span class="pre">|</span> <span class="pre">php</span> <span class="pre">islandora.php</span> <span class="pre">greeter:hello</span>
+<span class="pre">Hello</span> <span class="pre">World!</span>
+<span class="pre">`</span></code></p>
+<p>## Working with JSON data</p>
+<p>Most of the time, we&#8217;re dealing with JSON output. Often, we&#8217;re working with node data from Drupal or ld+json RDF from Fedora 4. As a convienence, the JsonInputIslandoraCommand can be extended instead of IslandoraCommand. With a JsonInputIslandoraCommand, <cite>$this-&gt;data</cite> is an associative array that is automatically parsed from JSON input through STDIN. Let&#8217;s trying writing another Greeter, only this time it will accept JSON input of the form <cite>{&#8220;name&#8221;: &#8220;some_name&#8221;}</cite>.</p>
+<p><a href="#id29"><span class="problematic" id="id30">``</span></a><a href="#id31"><span class="problematic" id="id32">`</span></a>php
+&lt;?php</p>
+<dl class="docutils">
+<dt>/**</dt>
+<dd><ul class="first simple">
+<li>This file is part of Islandora.</li>
+<li></li>
+<li>For the full copyright and license information, please view the LICENSE</li>
+<li>file that was distributed with this source code.</li>
+<li></li>
+<li>PHP Version 5.5.9</li>
+<li></li>
+<li>&#64;category Islandora</li>
+<li>&#64;package IslandoraGreeter</li>
+<li>&#64;author  Your Name &lt;<a class="reference external" href="mailto:your_email&#37;&#52;&#48;your_employer&#46;com">your_email<span>&#64;</span>your_employer<span>&#46;</span>com</a>&gt;</li>
+<li>&#64;license <a class="reference external" href="http://www.gnu.org/licenses/gpl-3.0.en.html">http://www.gnu.org/licenses/gpl-3.0.en.html</a> GPL</li>
+<li>&#64;link   <a class="reference external" href="http://www.islandora.ca">http://www.islandora.ca</a></li>
+</ul>
+<p class="last"><a href="#id33"><span class="problematic" id="id34">*</span></a>/</p>
+</dd>
+</dl>
+<p>use IslandoraJsonInputIslandoraCommand;
+use SymfonyComponentConsoleInputInputInterface;
+use SymfonyComponentConsoleOutputOutputInterface;</p>
+<dl class="docutils">
+<dt>/**</dt>
+<dd><ul class="first simple">
+<li>Says hello! Accepts JSON data in the form {&#8220;name&#8221; : &#8220;your_name&#8221;}.</li>
+<li></li>
+<li>&#64;category Islandora</li>
+<li>&#64;package IslandoraGreeter</li>
+<li>&#64;author  Your Name &lt;<a class="reference external" href="mailto:your_email&#37;&#52;&#48;your_employer&#46;com">your_email<span>&#64;</span>your_employer<span>&#46;</span>com</a>&gt;</li>
+<li>&#64;license <a class="reference external" href="http://www.gnu.org/licenses/gpl-3.0.en.html">http://www.gnu.org/licenses/gpl-3.0.en.html</a> GPL</li>
+<li>&#64;link   <a class="reference external" href="http://www.islandora.ca">http://www.islandora.ca</a></li>
+</ul>
+<p class="last"><a href="#id35"><span class="problematic" id="id36">*</span></a>/</p>
+</dd>
+</dl>
+<p>class JsonHelloGreeter extends JsonInputIslandoraCommand
+{</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>/**</dt>
+<dd><ul class="first simple">
+<li>Sets command configuration.</li>
+<li></li>
+<li>&#64;return null</li>
+</ul>
+<p class="last"><a href="#id37"><span class="problematic" id="id38">*</span></a>/</p>
+</dd>
+</dl>
+<p>protected function configure()
+{</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>$this-&gt;setName(&#8216;greeter:helloUsingJson&#8217;)</dt>
+<dd><dl class="first docutils">
+<dt>-&gt;setDescription(</dt>
+<dd>&#8216;Says hello! Accepts JSON data in the form {&#8220;name&#8221; : &#8220;your_name&#8221;}.&#8217;</dd>
+</dl>
+<p class="last">);</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>}</p>
+<dl class="docutils">
+<dt>/**</dt>
+<dd><ul class="first simple">
+<li>Says hello! Accepts JSON data in the form {&#8220;name&#8221; : &#8220;your_name&#8221;}.</li>
+<li></li>
+<li>&#64;param InputInterface $input An InputInterface instance</li>
+<li>&#64;param OutputInterface $output An OutputInterface instance</li>
+<li></li>
+<li>&#64;return null</li>
+</ul>
+<p class="last"><a href="#id39"><span class="problematic" id="id40">*</span></a>/</p>
+</dd>
+</dl>
+<p>protected function execute(InputInterface $input, OutputInterface $output)
+{</p>
+<blockquote>
+<div>$name = $this-&gt;data[&#8216;name&#8217;];
+$output-&gt;writeln(&#8220;Hello &#8221; . trim($name) . &#8221;!&#8221;);</div></blockquote>
+<p>}</p>
+</div></blockquote>
+</div>
+<div class="section" id="id41">
+<h1>}<a class="headerlink" href="#id41" title="Permalink to this headline">¶</a></h1>
+<p>This command is almost exactly the same as the last, except it extends JsonInputIslandoraCommand and its execute function pulls the name of the person to greet out of <cite>$this-&gt;data</cite> using the key &#8216;name&#8217;.</p>
+<p>Let&#8217;s make sure the command is available.
+<a href="#id42"><span class="problematic" id="id43">``</span></a><a href="#id44"><span class="problematic" id="id45">`</span></a>bash
+<a class="reference external" href="mailto:vagrant&#37;&#52;&#48;islandora">vagrant<span>&#64;</span>islandora</a>:~/islandora/camel/commands/bin$ php islandora.php
+Islandora Command Tool version 0.0.0-SNAPSHOT</p>
+<dl class="docutils">
+<dt>Usage:</dt>
+<dd>command [options] [arguments]</dd>
+<dt>Options:</dt>
+<dd><table class="first docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
+<tbody valign="top">
+<tr><td class="option-group">
+<kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></td>
+<td>Display this help message</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-q</span>, <span class="option">--quiet</span></kbd></td>
+<td>Do not output any message</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-V</span>, <span class="option">--version</span></kbd></td>
+<td>Display this application version
+&#8211;ansi      Force ANSI output
+&#8211;no-ansi     Disable ANSI output</td></tr>
+</tbody>
+</table>
+<p class="last">-n, &#8211;no-interaction Do not ask any interactive question
+-v|vv|vvv, &#8211;verbose Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug</p>
+</dd>
+<dt>Available commands:</dt>
+<dd>help              Displays help for a command
+list              Lists commands
+collectionService
+collectionService:nodeToSparql Converts Drupal node JSON for a collection to a SPARQL Update query
+greeter
+greeter:hello          Says hello!
+greeter:helloUsingJson     Says hello! Accepts JSON data in the form {&#8220;name&#8221; : &#8220;your_name&#8221;}.
+rdf
+rdf:createNode         Creates a Drupal node from Fedora RDF.
+rdf:extractContentType     Extracts a Drupal content type from Fedora RDF.
+rdf:updateNode         Updates a Drupal node from Fedora RDF.</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">`</span>
+<span class="pre">Once</span> <span class="pre">you've</span> <span class="pre">confirmed</span> <span class="pre">that</span> <span class="pre">`greeter:helloUsingJson`</span> <span class="pre">is</span> <span class="pre">available,</span> <span class="pre">you</span> <span class="pre">can</span> <span class="pre">run</span> <span class="pre">it</span> <span class="pre">using:</span>
+<span class="pre">```bash</span>
+<span class="pre">vagrant&#64;islandora:~/islandora/camel/commands/bin$</span> <span class="pre">echo</span> <span class="pre">'{&quot;name&quot;</span> <span class="pre">:</span> <span class="pre">&quot;World&quot;}'</span> <span class="pre">|</span> <span class="pre">php</span> <span class="pre">islandora.php</span> <span class="pre">greeter:helloUsingJson</span>
+<span class="pre">Hello</span> <span class="pre">World!</span>
+<span class="pre">`</span></code>
+And there you have it! That&#8217;s how you can create your own commands for use in Camel routes, and also how to experiment with them outside of Camel! Remember, when experimenting with more complicated data, you&#8217;ll probably want to pipe the contents of a file to the command like we did above.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">}</a></li>
+<li><a class="reference internal" href="#id24">}</a></li>
+<li><a class="reference internal" href="#id41">}</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/technical-documentation/commands.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, islandora community.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="../_sources/technical-documentation/commands.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
